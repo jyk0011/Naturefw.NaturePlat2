@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript">
+        n = {};
+        n.test = function() {
+            alert("a");
+
+            var a = "123";
+
+
+            alert(a);
+
+        };
+
+        n.test.prototype.cc = function () {
+            alert(this.b);
+        };
+        n.test.prototype.b = "bb";
+        
+        function aa() {
+            var t = new n.test();
+            alert(t.b);
+       
+            t.a = "aaa";
+            t.b = "bbb";
+            t.cc();
+
+            alert(t.a);
+            alert(t.b);
+        }
+        
+        function bb() {
+
+            $("#ss").html("haha ");
+
+        }
+        
+        function $(select, rootjQuery) {
+            return parent.$(select, document, rootjQuery);
+        }
+
+    </script>
+</head>
+<body>
+    <div id="ss" onclick ="bb()">aaa</div>
+</body>
+</html>

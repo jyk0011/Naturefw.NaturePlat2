@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>测试一下new和不new的区别</title>
+    <script type="text/javascript">
+
+        var state = 1;
+        
+        function fun1(para, timestep) {
+            var a1 = para.a1;
+
+            para.a1 = para.a1 * 100;
+
+            this.time = timestep;
+
+            var self = this;
+            
+            state ++;
+            
+            window.setTimeout(function() {
+                console.log(para.name);
+                console.log("para.a1 : " + para.a1);
+                console.log("a1:" + a1);
+                console.log("this.time: " + self.time);
+
+
+            },timestep);
+        }
+
+        fun1({ name: "aa1",a1:10 }, 1000);
+        fun1({ name: "aa2", a1: 20 }, 100);
+
+        var f1 = new fun1({ name: "aa3", a1: 30 }, 10);
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

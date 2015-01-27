@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script type="text/javascript" src="http://LCNatureResource.nature.com/Scripts/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript">
+        function createCORSRequest(method, url) {  
+            var xhr = new XMLHttpRequest();
+            xhr.onload = _handleLoad;
+            if ("withCredentials" in xhr) {  
+                // 此时即支持CORS的情况  
+                // 检查XMLHttpRequest对象是否有“withCredentials”属性  
+                // “withCredentials”仅存在于XMLHTTPRequest2对象里  
+                alert('支持');
+                xhr.open(method, url, true);  
+   
+            } else if (typeof XDomainRequest != "undefined") {
+   
+                // 否则检查是否支持XDomainRequest，IE8和IE9支持  
+                // XDomainRequest仅存在于IE中，是IE用于支持CORS请求的方式  
+                alert('XDomainRequest');
+                xhr = new XDomainRequest();
+                xhr.open(method, url);  
+   
+            } else {  
+   
+                // 否则，浏览器不支持CORS  
+                alert('不支持');
+                xhr = null;
+   
+            }  
+            return xhr;  
+        }
+
+        //var url = 'http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery182003187177260406315_1401852306912&action=list&mdid=606&mpvid=60601&fpvid=60602&pageno=1&pagerc=0&hasKey=0&dbid=2%2C4&_=1401869787512';
+        //var xhr = createCORSRequest('POST', url);  
+        //if (!xhr) {  
+        //    throw new Error('CORS not supported');  
+        //} else {
+        //    xhr.send({name:"ssss"});
+        //}
+
+        function _handleLoad(aa,bb,cc,dd,ee,ff) {
+            alert('加载完成');
+            alert(aa);
+        }
+
+        window.onload = function() {
+            var url = 'http://lcnatureresource.nature.com/Data/GetData.ashx?action=list&mdid=593&mpvid=59301&fpvid=59302&pageno=1&pagerc=0&hasKey=0&dbid=2%2C4&_=14019321912782';
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                cache: false,
+                xhrFields: {    //允许跨域访问是添加cookie
+                    withCredentials: true
+                },
+                url: url,               /*Nature.resourceUrl + "/Data/GetData.ashx",*/
+                data: {},
+                //timeout: 2000,
+                error: function () {
+                    alert("获取 的时候发生错误！");
+
+
+                },
+
+                success: function (msg) {
+                    alert("成功！");
+
+
+                }
+            });
+
+        };
+
+    </script>
+</head>
+<body>
+    
+
+</body>
+</html>

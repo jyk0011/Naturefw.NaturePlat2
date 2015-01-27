@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>修改视图信息</title>
+     <script  type="text/javascript" src="/boot.js"></script>
+   
+    <script type="text/javascript" >
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "list";     //列表页面
+
+        var isloadList = false;
+        
+        function jsReady() {
+            //开始加载
+            
+            var uPara = $.getUrlParameter(document);
+            var urlView = '/CommonMainJs/DataForm.htm' + Nature.jsVer + '&mdid=' + uPara.mdid + '&ppvid=' + uPara.ppvid + '&mpvid=' + uPara.mpvid
+                + '&fpvid=0&bid=12802&id=' + uPara.id + '&frid=' + uPara.frid + '&frids=' + uPara.frids + '&ids=1';
+            
+            var view = $("#view");
+            view.attr("src", urlView);
+
+            //setList("701");
+            
+        }
+
+        function setList(kind) {
+             
+            
+            if (isloadList)
+                return;
+
+            isloadList = true;
+            
+            //alert(kind);
+            var uPara = $.getUrlParameter(document);
+            var urlViewColumn = '/CommonMainJs/DataListForm.htm' + Nature.jsVer + '&';
+               
+            ///CommonMainJs/DataListForm.htm?v=2.103&mdid=129&ppvid=12606&mpvid=12901&fpvid=12902&bid=12808&id=-2002&frid="-2002"&frids="-20,-2002"&ids=&1=1&upvid=12906
+            
+            switch (kind) {
+                case "701":
+                    urlViewColumn += 'mdid=132&ppvid=12606&mpvid=13201&fpvid=13202&bid=12805&upvid=13207&id=';
+                    break;
+                case "702":
+                    urlViewColumn += 'mdid=129&ppvid=12606&mpvid=12901&fpvid=12902&bid=12808&upvid=12906&id=';
+                    break;
+                case "703":
+                    urlViewColumn += 'mdid=136&ppvid=12606&mpvid=13601&fpvid=13602&bid=12809&upvid=13606&id=';
+                    break;
+
+            }
+            urlViewColumn += uPara.id + '&frid=' + uPara.frid + '&frids=' + uPara.frids + '&ids=1';
+
+            //urlViewColumn = '/CommonMainJs/DataList.htm?v=2.30&mdid=132&ppvid=12606&mpvid=13201&fpvid=13202&bid=12805&id=-2001&frid="-2001"&frids="-20,-2001"&ids=&1=1';
+            
+            var view = $("#viewColumn");
+            view.attr("src", urlViewColumn);
+        }
+
+        function openSelectCol() {
+            var uPara = $.getUrlParameter(document);
+            var pvid = uPara.id;
+            var frids = uPara.frids;
+            //SupportingPlatform/Javascript/SelectColToPV.htm?v=2.276&mdid=130&ppvid=12606&mpvid=13002&fpvid=13004&bid=12803&id=34701&frid="34701"&frids="347,34701"&ids=&1=1
+            var info = {
+                ButtonID: "12803",
+                BtnTitle: "选择实体类需要的属性",
+                WebWidth: "1200",
+                WebHeight: "750",
+                URL: "/SupportingPlatform/Javascript/SelectColToPV.htm",
+                OpenModuleID: "130",
+                parentPVid: "12606",
+                OpenPageViewID: "13002",
+                FindPageViewID: "13004"
+
+            };
+            top.IndexOpenWeb(info, pvid, pvid, frids, "");
+            
+        }
+        </script>
+    
+</head>
+ 
+<body>
+     <div id="divFormMain">
+        <div id="div1" class="ui-box" style="width:580px;height: 720px;float:left;">
+            <div class="ui-box-head">
+                <h4 class="ui-box-head-title">实体类的信息</h4>
+                <span class="ui-box-head-text"> </span>
+                <a href="#" class="ui-box-head-more"> </a>
+            </div>
+            <div class="ui-box-container">
+                <div class="ui-box-content">
+                    <iframe id="view" src='' style="width:570px;height: 700px;"></iframe>
+
+                </div>
+            </div>
+        </div>
+        
+        <div id="divJieKuanRenKuang" class="ui-box" style="width:1080px;height: 720px;float:left;margin-left: 10px;display:block;">
+            <div class="ui-box-head">
+                <h4 class="ui-box-head-title">实体类包含的属性</h4> <span onclick="openSelectCol()">增加属性</span>
+                <span class="ui-box-head-text"> </span>
+                <a href="#" class="ui-box-head-more"> </a>
+            </div>
+            <div class="ui-box-container">
+                <div class="ui-box-content">
+                    <iframe id="viewColumn" src='' style="width:1150px;height: 700px;"></iframe>
+
+                </div>
+            </div>
+        </div>
+         
+    </div>
+   
+</body>
+</html>

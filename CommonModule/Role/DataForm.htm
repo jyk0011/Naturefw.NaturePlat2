@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>表单页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+ 
+    <script type="text/javascript" language="javascript">
+
+        var dbid = "2";
+        var para;
+
+        function jsReady() {
+            dbid = "2," + $.cookie("ServicesDataBaseID");
+            myFormLoad();
+        }
+
+        function myCheck() {
+
+            //创建传值的json
+            //        var jsonKey = "{";
+            //        for (var i = 0; i < colIds.length;i++ ) {
+            //            jsonKey += "c" + colIds[i] + ":{},";
+            //        }
+            //        jsonKey = jsonKey.substring(0, jsonKey.length - 1);
+            //        jsonKey += "}";
+            //        jsonKey = eval("(" + jsonKey + ")");
+
+            Nature.Page.Form.SavaData(function () {
+                //保存结
+                loadFirst();
+
+                myClear();
+
+                //关闭窗体
+                parent.formClose(para.bid);
+            });
+
+        }
+
+        function myCheck2() {
+            Nature.Page.Form.SavaData(function () {
+                //保存结束
+                myClear();
+                loadFirst();
+            });
+        }
+       
+
+    </script>   
+</head>
+<body>
+    <div id="divFormMain">
+        <form id="dataForm">
+            <div id="divForm">
+        
+            </div>
+        </form> 
+        <div style="text-align:center">
+            <input type="button" name="BtnSave" class="btn" value="保存后关闭" onclick="return myCheck();" id="BtnSave" class="btn" />
+            <input type="button" name="BtnSave" class="btn" value="保存后继续" onclick="return myCheck2();" id="BtnSave2" class="btn" />
+            <input type="button" name="BtnSave" class="btn" value=" 关　　闭 " onclick="myClose();" id="BtnClose" class="btn" />
+          
+        </div>
+    </div>
+   
+</body>
+</html>

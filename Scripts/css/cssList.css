@@ -1,0 +1,240 @@
+body
+{
+	margin : 0px;
+	font-size:12pt;
+	background-color:White;
+}
+
+.css_Form
+{
+	padding:3px;
+	width:100%;
+	border:1px;
+	border-width:1px;
+	border-color:#5D7B9D;
+	border-collapse:collapse;
+	border-style:solid;
+	background-color:White;
+	
+	
+}
+
+.css_Search
+{
+	padding:3px;
+	width:100%;
+	border:0px;
+	border-width:0px;
+	border-color:#CC9966;
+	border-collapse:collapse;
+	background-color:White;
+	
+	
+}
+
+.css_SearchQ
+{
+	padding:3px;
+	width:auto ;
+	border:0px;
+	border-width:0px;
+	border-color:#CC9966;
+	border-collapse:collapse;
+	background-color:White;
+	
+}
+
+table
+{
+	padding:3px;
+	border:1px;
+	border-width:1px;
+	border-color:#C8E1FB;
+	
+	border-collapse:collapse;
+ 
+}
+
+th
+{
+	background-color: #F2F9FF;
+	color:#014F8A;
+	font-size: 12pt;
+	padding:3px;
+	background-image:url(img/th1.jpg);
+}
+td   
+{
+	font-size: 12pt;
+	padding:3px;
+}
+
+span   
+{
+	font-size: 12pt;
+	padding:3px;
+}
+
+.css_Grid1
+{
+	padding:3px;
+	border:1px;
+	border-width:1px;
+	border-color:#ffee00;
+	width:100%;
+	border-collapse:collapse;
+}
+
+.cssTable
+{
+	color:Black;
+	border:1px;
+	border-width:1px;
+	background-color:#ffffee;
+	border-color:#5D7B9D;
+	border-style:solid;
+	border-collapse:collapse;
+	
+	
+}
+
+.css_GridTR
+{
+	color:White;
+	background-color:#5D7B9D;
+	
+}
+
+
+.css_tr_c1
+{
+	background-color:#FFFFFe ;
+	color:#000000;
+}
+.css_tr_c2
+{
+	background-color:#E7F1FB ;
+	color:#993300;
+}
+
+.css_tr_move
+{
+	background-color:#A5CDEB;
+	color:#123456;
+}
+
+.css_tr_CK
+{
+	background-color:#61A7D6;
+	color:#333333;
+}
+
+
+.Text {  font-size: 9pt}
+.Newbutton
+{   font-size: 12pt; color: White;
+	font-family: "Tahoma","宋体";
+	
+		}
+.cssTxt {  
+    font-size: 12pt; 
+    color: #003399; 
+    font-family: "宋体"; 
+    font-style: normal; 
+    background-color: #fefefe; 
+    border-color: #93BEE2 #93BEE2 #93BEE2 #93BEE2 ; 
+    border: 1px #93BEE2 solid; 
+}
+/*按钮样式*/
+.ButtonCss {
+    font-size: 14px; color: #003399;
+    height: 29px;
+    background-image:url(img/button.gif);
+     
+    cursor:pointer ;
+    
+}
+.btnEnable {
+    border-left: #7b9ebd 1px solid; 
+    border-right: #7b9ebd 1px solid; 
+    border-top: #7b9ebd 1px solid;
+    border-bottom: #7b9ebd 1px solid;
+    padding-top: 3px;
+    padding-left: 5px; 
+    padding-right: 5px;
+    padding-bottom : 3px;
+    margin-right: 5px;
+    font-size: 14px; 
+    color: black; 
+    cursor: default;
+    border-radius: 4px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #ffffff), color-stop(1, #ffffff));
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#ffffff);
+    min-width: 70px;
+    min-height: 26px;
+     
+}
+ .btn {
+    border-left: #7b9ebd 1px solid; 
+    border-right: #7b9ebd 1px solid; 
+    border-top: #7b9ebd 1px solid;
+    border-bottom: #7b9ebd 1px solid;
+    padding-top: 3px;
+    padding-left: 5px; 
+    padding-right: 5px;
+    padding-bottom : 3px;
+    margin-right: 5px;
+    font-size: 14px; 
+    color: black; 
+    cursor: pointer;
+    border-radius: 4px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #ffffff), color-stop(1, #cecfde));
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#cecfde);
+    min-width: 70px;
+    min-height: 26px;
+     
+}
+.btn:ACTIVE {
+     padding-top: 3px;
+     padding-left: 7px; 
+     padding-right: 4px;
+     padding-bottom : 2px;
+     background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #cecfde), color-stop(1, #ffffff));
+     min-width: 70px;
+     min-height: 26px;
+}
+.btn:FOCUS {
+    
+}
+.btn:HOVER 
+{
+     background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #cecfa0), color-stop(1, #ffffff));
+    
+}.btn:LINK {
+    
+}
+A
+{
+	font-size: 12pt;
+	color: #006699;
+	text-decoration: none;
+}
+A:ACTIVE {
+
+	color : #006699;	
+	text-decoration: none;
+}
+A:FOCUS
+{
+	color: black;
+	text-decoration: none;
+}
+A:HOVER
+{
+	color: #ff4500;
+	text-decoration: underline;
+}
+A:LINK {
+	
+	text-decoration: none;
+}

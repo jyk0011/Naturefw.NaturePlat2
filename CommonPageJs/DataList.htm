@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面</title>
+    <script language="javascript" type="text/javascript" src="http://natureservice.517.cn/Scripts/jquery-1.8.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="http://natureservice.517.cn/Scripts/NatureAjax/jQuery.loadJs.js"></script>
+    <style type="text/css">
+        #divFloatSearch{   
+            background-color:#d2eefd ;   
+            background:url("/Scripts/css/img/formbk.gif");
+            border: 1px solid #99bbe8;   
+            padding:5px;
+            position:absolute;   
+            
+            color: #15428b;
+        } 
+        #divSearchDetail {
+            float: left;
+        }
+        .cssFind {
+            float: left;
+        }
+        #divDataList {
+            clear: both;
+        }
+    </style>
+
+    <script type="text/javascript" language="javascript">
+        $.loadCss("cssList", "pager");
+
+        var dataID = -2;
+        var frid = -2;
+
+        var info = { url: "", OpenModuleID: 0, OpenPageViewID: 0, FindPageViewID: 0, ButtonID: 0, WebWidth: 0, WebHeight: 0 };
+        var para;
+
+        var dbid;
+
+        window.onload = function () {
+            $.loadListJs(function() {
+                //alert("js加载完毕，可以进行后续操作");
+                dbid = "1," + $.cookie("ServicesDataBaseID");
+                
+                para = $.getUrlParameter();
+                //按钮
+                Nature.Page.Button.Create(buttonEnd, openWeb, onSearch, onDelete, onOutput, writeDebug, parent.showLoginDiv, 1);
+
+                //创建查询
+                Nature.Page.Find.Create(onSearch, writeDebug, parent.showLoginDiv, 1);
+
+                //创建表格（只有表头，没有数据）
+                Nature.Page.Grid.CreateTable(para, 1, function() {
+                    //创建分页控件（加载分页模板）
+                    Nature.Page.QuickPager.LoadPageTurn(parent.showLoginDiv, dbid, writeDebug, function() {
+                        //获取第一页的记录集（ajax获取数据）
+                        Nature.Page.QuickPager.LoadDataSource(1, undefined, function(dataSource) {
+                            //绑定表格（显示数据）
+                            Nature.Page.Grid.DataBind(dataSource);
+                        });
+                    });
+
+                });
+
+                //divDrop();
+
+                //注册事件
+                if (typeof(para.bid) == "undefined") {
+                    //tab自带的列表，用模块ID作为标识
+                    parent.mainEvent.divEvent["btn" + para.mdid] = {
+                        "loadFirst": loadFirst,
+                        "loadThis": loadThis,
+                        "closeSon": closeSon
+                    };
+                } else {
+                    //列表页打开的列表，用按钮ID作为标识
+                    parent.mainEvent.divEvent["btn" + para.bid] = {
+                        "loadFirst": loadFirst,
+                        "loadThis": loadThis,
+                        "closeSon": closeSon
+                    };
+                }
+
+                //注册层级关系
+                if (typeof(para.bid) == "undefined") {
+                    //tab自带的列表，不处理
+                } else {
+                    //列表页打开的列表
+                    if (typeof(parent.mainEvent.tab["tab" + para.ppvid]) != "undefined") {
+                        //第一层
+                        parent.mainEvent.tabDiv["btn" + para.bid] = {
+                            "parentIdPath": [para.ppvid],
+                            "sonId": []
+                        };
+
+                    } else {
+                        //大于第一层
+                        //父节点
+                        var parentPv = parent.mainEvent.tabDiv["btn" + para.ppvid];
+
+                        var tmpPath = parentPv.parentIdPath.concat();
+                        tmpPath.push(para.ppvid);
+
+                        //创建本节点，并且设置父节点路径
+                        parent.mainEvent.tabDiv["btn" + para.bid] = {
+                            "parentIdPath": tmpPath,
+                            "sonId": []
+                        };
+                    }
+                }
+            });
+        };
+
+
+        function buttonEnd() {
+        }
+
+        function loadFirst() {
+            //alert("loadFirst");
+            Nature.Page.QuickPager.LoadDataSource(1, undefined, function (dataSource) {
+                //绑定表格（显示数据）
+                Nature.Page.Grid.DataBind(dataSource, Nature.Page.QuickPager.setPageTurn);
+
+                Nature.Page.Button.resetButtonState();
+            });
+        }
+        function loadThis() {
+            //alert("loadThis");
+            Nature.Page.QuickPager.LoadDataSource(Nature.Page.QuickPager.thisPageIndex, undefined, function (dataSource) {
+                //绑定表格（显示数据）
+                Nature.Page.Grid.DataBind(dataSource, Nature.Page.QuickPager.setPageTurn);
+
+                Nature.Page.Button.resetButtonState();
+            });
+        }
+        function closeSon() {
+            //alert("closeSon");
+        }
+
+        function openWeb(btnInfo) {
+
+            info = btnInfo; //.data; //模块ID、视图ID等
+
+            var frid = "";
+            var frids = "";
+            var urlParam = $.getUrlParameter();
+            var ids = Nature.Page.Grid.DataIds;
+
+            //判断其他外键
+            if (typeof (urlParam.id) == "undefined") {
+                //第一个列表页面的情况
+                frid = dataID;
+                frids = dataID;
+            } else {
+                //不是第一个页面
+                frid = dataID;
+                frids = urlParam.frids.replace(/"/g, "") + "," + (dataID + "\"").replace(/"/g, "");
+            }
+
+            //alert(frids);
+
+            parent.IndexOpenWeb(info, dataID, frid, frids, ids);
+
+            return;
+
+        }
+
+        function onSearch(query) {
+            //开始查询
+            //alert(query.formName);
+            switch (query.formName) {
+                case "dataForm1":
+                    //writeDebug(query.formValue);
+                    break;
+                case "dataForm2":
+                    //高级查询，设置快速查询
+                    var colIds = "";
+                    for (var key in query.formValue) {
+                        //writeDebug(key);
+                        var tmpValue = query.formValue[key];
+                        if (tmpValue.length > 0 && tmpValue != "-99999" && tmpValue != "`") {
+                            var id = key.substring(1, key.length);
+                            colIds += "{\"id\":\"" + id + "\",\"val\":\"" + $("#divFloatSearchDetail #ctrl_" + id).val() + "\"},";
+                        }
+                    }
+
+                    if (colIds.length > 0) {
+                        colIds = colIds.substring(0, colIds.length - 1);
+                        var tmp = eval("([" + colIds + "])");
+                        Nature.Page.Find.QuickFind(tmp);
+                    }
+                    break;
+
+            }
+
+            //调用分页控件，提交表单
+            Nature.Page.QuickPager.BindGrid(1, query);
+
+            //隐藏高级查询
+            $("#divFloatSearch").hide();
+        }
+
+        function onDelete(btnInfo) {
+            if (confirm('您确定要删除吗？')) {
+                //按钮信息
+                
+                Nature.Page.DeleteData.del(btnInfo, dataID, dbid, function (msg) {
+                    if (msg.msg == "") {
+                        //删除成功
+                        loadThis();
+                        Nature.Page.Button.resetButtonState();
+                    } else {
+                        //删除不成功
+                        alert(msg.msg);
+                    }
+                });
+            }
+        }
+
+        function onOutput(btnInfo) {
+            alert("导出");
+            info = btnInfo.data;    //模块ID、视图ID等
+        }
+
+        var wdDepth = 0;        //单独打开页面的话，递归无法退出，所以加上深度的判断。
+        function writeDebug(msg) {
+            wdDepth++;
+            if (wdDepth > 14)
+                return;
+
+            if (parent.DebugSet)
+                parent.DebugSet(msg);
+            else
+                parent.writeDebug(msg);
+        }
+        
+    </script>
+
+    </head>
+<body>
+<div id="divMain"> 
+        <div id="divButton"></div>
+        <div id="divSearch"><div class="cssFind">当前查询条件：</div>
+            <div ><form id="dataForm1"><div id="divSearchDetail"></div><div id="divSearchBtn"></div></form></div>
+        </div>
+        <div id="divQuickPage"></div>
+        <div id="divDataList"></div>
+        <div id="divQuickPage1"></div>
+        <div id="divFloatSearch"  style="display:none;">
+            <span id="span_title" style="width:95%; float:left;">查询条件 <a href="javascript:void(0)" id="A2">X</a></span>
+            <form id="dataForm2"><div id="divFloatSearchDetail"  ></div></form>
+        </div>
+    </div>
+</body>
+</html>

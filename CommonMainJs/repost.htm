@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>表单页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+    <script type="text/javascript" language="javascript">
+        var para;
+        var dbid;
+        var control;
+        //
+        function jsReady() {
+            para = $.getUrlParameter(document);
+
+            $("#divFormMain").html(para.guid);
+
+            //根据guid获取debug信息
+            var guid = para.guid;
+            var formId = para.formId;
+
+            var err = decodeURIComponent(para.err);
+            var msg;
+
+            var newDataId = para.id;
+            
+            var urlPara = {
+                action: "getdebug",
+                guid: guid
+            };
+
+            msg = err.split('`');
+
+            if (err.length > 0) {
+                //出错了，弹出提示
+                if (msg.length > 1) {
+                    /*寻找控件,设置焦点*/
+                    $("#ctrl_" + msg[1], parent.document).focus();
+
+                }
+                alert(msg[0]);
+                top.spinStop();
+
+            }
+            
+            $.ajaxGetData({
+                data: urlPara,
+                url: "/data/PostData.ashx",
+                title: "获取添加修改的debug",
+                success: function(data) {
+                    if (data.ajaxPost == "1") {
+                        //没有记录
+                    } else {
+                        //显示debug
+                        if (typeof(top.DebugSet) != "undefined")
+                            if (typeof (data.ajaxPost) != "undefined")
+                                if (typeof (data.ajaxPost.debug) != "undefined")
+                                    top.DebugSet(data.ajaxPost.debug);
+                    }
+
+                    //if (msg.length == 0) {
+                        parent[formId].formPostCallback(msg, newDataId);
+                    //}
+                }
+            });
+        }      
+
+    </script>   
+</head>
+    <body>
+        <div id="divFormMain">
+           
+        </div>
+   
+    </body>
+</html>

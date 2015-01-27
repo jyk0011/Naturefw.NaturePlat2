@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{285A5B75-76DA-4CAC-A30B-CFDC4F77B5CB}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NatureFramework</RootNamespace>
+    <AssemblyName>NatureFramework.SupportingPlatform</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Nature.BaseWebform, Version=2.5.0.18466, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.BaseWebform.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.Client.SSOWebApp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Client.SSOWebApp.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.Common, Version=2.5.0.20583, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.DataAccessLibrary, Version=2.5.0.16412, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.DataAccessLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.MetaData, Version=2.5.0.20583, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.MetaData.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.RoleManage">
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.RoleManage.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.Service, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Service.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.Service.DataBase, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Service.DataBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.UI.WebControl.BaseControl, Version=2.5.0.19867, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.BaseControl.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.UI.WebControl.MetaControl, Version=2.5.0.19867, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.MetaControl.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.UI.WebControl.QuickPager, Version=2.5.0.28080, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.QuickPager.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.UI.WebControl.QuickPagerSQL, Version=2.5.0.30712, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.QuickPagerSQL.dll</HintPath>
+    </Reference>
+    <Reference Include="Nature.User, Version=2.5.0.30713, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\自然框架源码\_dll\bin\Nature.User.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="a.htm" />
+    <Content Include="ajaxTimeout.aspx" />
+    <Content Include="App_Data\Meta.mdb" />
+    <Content Include="boot.js" />
+    <Content Include="bootLoad.js" />
+    <Content Include="CommonMainJs\DataChangeList.htm" />
+    <Content Include="CommonMainJs\DataForm.htm" />
+    <Content Include="CommonMainJs\DataList.htm" />
+    <Content Include="CommonMainJs\ModViewColum.htm" />
+    <Content Include="CommonMainJs\repost.htm" />
+    <Content Include="CommonMainJs\SelectData.htm" />
+    <Content Include="CommonMainJs\DataListForm.htm" />
+    <Content Include="CommonMainJs\DataChangeLog.htm" />
+    <Content Include="CommonMainJs\DatacOperater.htm" />
+    <Content Include="CommonMainJs\ST_DataList.htm" />
+    <Content Include="CommonModule\Role\DataForm.htm" />
+    <Content Include="CommonModule\Role\DataList.htm" />
+    <Content Include="divform.htm" />
+    <Content Include="PasswordUpdate.htm" />
+    <Content Include="CommonMainJs\Index.htm" />
+    <Content Include="CommonModule\Role\RoleAddUser.aspx" />
+    <Content Include="CommonModule\Role\RoleMod.aspx" />
+    <Content Include="Default.aspx" />
+    <Content Include="loginSSO.htm" />
+    <Content Include="Scripts\Customer\DocAjax.js" />
+    <Content Include="Scripts\Customer\DocCreate.js" />
+    <Content Include="Scripts\Customer\FormBind\formBind12603.js" />
+    <Content Include="Scripts\Customer\FormBind\formBind12703.js" />
+    <Content Include="Scripts\Customer\FormBind\formBind12803.js" />
+    <Content Include="Scripts\Customer\FormBind\formBind13205.js" />
+    <Content Include="Scripts\json.js" />
+    <Content Include="Scripts\QuickPager\PageTurn1.htm" />
+    <Content Include="Scripts\UIFunction.js" />
+    <Content Include="SSOApp\lock.htm" />
+    <Content Include="SupportingPlatform\CodeGenerators\CreateCode.aspx" />
+    <Content Include="SupportingPlatform\CodeGenerators\UC\CodeEntity.ascx" />
+    <Content Include="SupportingPlatform\CodeGenerators\UC\UCCode1.ascx" />
+    <Content Include="SupportingPlatform\CodeGenerators\UC\UCCodeTemplate.ascx" />
+    <Content Include="SupportingPlatform\Default.aspx" />
+    <Content Include="SupportingPlatform\Document\CreateDocument.htm" />
+    <Content Include="SupportingPlatform\Document\DataBaseToMeta.aspx" />
+    <Content Include="SupportingPlatform\Document\Excel.aspx" />
+    <Content Include="SupportingPlatform\Javascript\ControlInfo.aspx" />
+    <Content Include="SupportingPlatform\Javascript\ControlMetaJson - 副本.js" />
+    <Content Include="SupportingPlatform\Javascript\ControlMetaJson.js" />
+    <Content Include="SupportingPlatform\Javascript\sAddModule.js" />
+    <Content Include="SupportingPlatform\Javascript\SelectColToPV.htm" />
+    <Content Include="SupportingPlatform\Javascript\GridFormat.aspx" />
+    <Content Include="SupportingPlatform\Javascript\GridFormat.js" />
+    <Content Include="SupportingPlatform\Javascript\GridFormatAssign.js" />
+    <Content Include="SupportingPlatform\Javascript\sAddModule.htm" />
+    <Content Include="SupportingPlatform\Main.aspx" />
+    <Content Include="SupportingPlatform\Meta\AddColumn.aspx" />
+    <Content Include="SupportingPlatform\Meta\AddModule.aspx" />
+    <Content Include="SupportingPlatform\Meta\ModView.htm" />
+    <Content Include="SupportingPlatform\Meta\OutputMeta.aspx" />
+    <Content Include="SupportingPlatform\Meta\OutputMetaTable.aspx" />
+    <Content Include="SupportingPlatform\ProjectList.aspx" />
+    <Content Include="SupportingPlatform\Role\FilterList.aspx" />
+    <Content Include="SupportingPlatform\Role\FilterPageView.aspx" />
+    <Content Include="SupportingPlatform\Tree.aspx" />
+    <Content Include="test\fset.htm" />
+    <Content Include="test\testajax.html" />
+    <Content Include="test\testCache.htm" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="副本 loginSSO.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ajaxTimeout.aspx.cs">
+      <DependentUpon>ajaxTimeout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajaxTimeout.aspx.designer.cs">
+      <DependentUpon>ajaxTimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SSOApp\getUserName.ashx.cs">
+      <DependentUpon>getUserName.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="SSOApp\PostData.ashx.cs">
+      <DependentUpon>PostData.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\CodeGenerators\CreateCode.aspx.cs">
+      <DependentUpon>CreateCode.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\CodeGenerators\CreateCode.aspx.designer.cs">
+      <DependentUpon>CreateCode.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\CodeGenerators\UC\UCCodeTemplate.ascx.cs">
+      <DependentUpon>UCCodeTemplate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\CodeGenerators\UC\UCCodeTemplate.ascx.designer.cs">
+      <DependentUpon>UCCodeTemplate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\DataBaseToMeta.aspx.cs">
+      <DependentUpon>DataBaseToMeta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\DataBaseToMeta.aspx.designer.cs">
+      <DependentUpon>DataBaseToMeta.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\Excel.aspx.cs">
+      <DependentUpon>Excel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\Excel.aspx.designer.cs">
+      <DependentUpon>Excel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\Excel.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Document\GetColRemark.ashx.cs">
+      <DependentUpon>GetColRemark.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Javascript\ControlInfo.aspx.cs">
+      <DependentUpon>ControlInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Javascript\ControlInfo.aspx.designer.cs">
+      <DependentUpon>ControlInfo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Javascript\GridFormat.aspx.cs">
+      <DependentUpon>GridFormat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Javascript\GridFormat.aspx.designer.cs">
+      <DependentUpon>GridFormat.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Main.aspx.cs">
+      <DependentUpon>Main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Main.aspx.designer.cs">
+      <DependentUpon>Main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\AddColumn.aspx.cs">
+      <DependentUpon>AddColumn.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\AddColumn.aspx.designer.cs">
+      <DependentUpon>AddColumn.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\AddModule.aspx.cs">
+      <DependentUpon>AddModule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\AddModule.aspx.designer.cs">
+      <DependentUpon>AddModule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\EntityModule.cs" />
+    <Compile Include="SupportingPlatform\Meta\EntityPageView.cs" />
+    <Compile Include="SupportingPlatform\Meta\OutputMeta.aspx.cs">
+      <DependentUpon>OutputMeta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\OutputMeta.aspx.designer.cs">
+      <DependentUpon>OutputMeta.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\OutputMeta.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\OutputMetaTable.aspx.cs">
+      <DependentUpon>OutputMetaTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\OutputMetaTable.aspx.designer.cs">
+      <DependentUpon>OutputMetaTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Meta\OutputMetaTable.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\ProjectList.aspx.cs">
+      <DependentUpon>ProjectList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\ProjectList.aspx.designer.cs">
+      <DependentUpon>ProjectList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Role\FilterList.aspx.cs">
+      <DependentUpon>FilterList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Role\FilterList.aspx.designer.cs">
+      <DependentUpon>FilterList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Role\FilterPageView.aspx.cs">
+      <DependentUpon>FilterPageView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Role\FilterPageView.aspx.designer.cs">
+      <DependentUpon>FilterPageView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SupportingPlatform\Tree.aspx.cs">
+      <DependentUpon>Tree.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SupportingPlatform\Tree.aspx.designer.cs">
+      <DependentUpon>Tree.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="CommonModule\Role\GetRoleData.ashx" />
+    <Content Include="CommonModule\Role\PostRoleData.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\芒果Mis数据库设计.xls" />
+    <Content Include="App_Data\元数据数据库设计.xls" />
+    <Content Include="App_Data\Grid格式化.xlsx" />
+    <Content Include="App_Data\SSO数据库设计.xls" />
+    <Content Include="App_Data\角色数据库设计.xls" />
+    <Content Include="App_Data\FreeMind版本控制.xls" />
+    <None Include="Properties\PublishProfiles\自然框架支持平台demo1.0.pubxml" />
+    <Content Include="SupportingPlatform\Document\GetColRemark.ashx" />
+    <Content Include="SSOApp\getUserName.ashx" />
+    <None Include="Properties\PublishProfiles\自然框架支持平台demo2.0.pubxml" />
+    <None Include="Properties\PublishProfiles\自然框架支持平台_内测.pubxml" />
+    <Content Include="SSOApp\WebApp.ashx" />
+    <Content Include="SSOApp\PostData.ashx" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>2471</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://nature.com</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

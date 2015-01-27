@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据变化的对比（一次操作）</title>
+    <script  type="text/javascript" src="/boot.js"></script>
+    <script type="text/javascript" >
+        var para;
+        var dbid;
+        var control;
+        //
+        var pageKind = "form";     //表单页面
+
+        var form1;
+        var form2;
+        var form3;
+
+        var formCount = 3;
+        
+        function jsReady() {
+            window.formCallback = formCallback_0;
+            
+            parent.spinStart();
+
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            myFormLoad();
+        }
+
+        function formCallback_0(formState) {
+            
+            myFormLoad2();
+        }
+        
+
+        function myFormLoad2() {
+            para = $.getUrlParameter(document);
+
+            var formData = form.formEvent.data;
+            
+
+            commandInfo = {
+                onTimeOut: parent.showLoginDiv,
+                dataBaseId: dbid
+            };
+
+          
+            //创建表单
+            var formEvent = {
+                control: $("#divForm1"),
+                divID:"#divForm1",
+                window: window,
+                moduleID: formData["1034020"],                     //对应的模块ID
+                masterPageViewID: formData["1034030"],           //主页面视图ID
+                dataID: -2,                //记录ID
+                buttonId: -2002                  //对应的按钮ID
+
+            };
+
+            formEvent.control = $("#divForm1");
+            formEvent.callback = function() {
+                //alert("1完成");
+                myBind(1);
+                
+                formEvent.control = $("#divForm2");
+                formEvent.callback = function () {
+                    //alert("2完成");
+                    myBind(2);
+                };
+                form2 = new Nature.Controls.Form(formEvent, commandInfo, para);
+                form2.create();
+
+                formEvent.control = $("#divForm3");
+                formEvent.callback = function () {
+                    //alert("3完成");
+                    myBind(3);
+
+
+                };
+                form3 = new Nature.Controls.Form(formEvent, commandInfo, para);
+                form3.create();
+
+
+            };
+            form1 = new Nature.Controls.Form(formEvent, commandInfo, para);
+            form1.create();
+
+         
+
+
+        }
+        
+        function myBind(kind) {
+            var formDataOld = form.formEvent.data["10360" + (4 + kind * 1) + "0"];
+            //var formDataNew = form.formEvent.data["1036060"];
+            //var formDataSubmit = form.formEvent.data["1036070"];
+
+            if (formDataOld != "") {
+                var jsonDataOld = eval("(" + formDataOld + ")");
+
+                var control = $("#divForm" + kind);
+
+                for (var key in jsonDataOld) {
+                    control.find("#ctrl_" + key).val(jsonDataOld[key]);
+                }
+            }
+            
+            formCount--;
+            if (formCount == 0)
+                duibi();
+
+        }
+
+        function duibi() {
+            var formDataOld = form.formEvent.data["1036050"];
+            var formDataNew = form.formEvent.data["1036060"];
+
+            if (formDataOld != "") {
+                var jsonDataOld = eval("(" + formDataOld + ")");
+                var jsonDataNew = eval("(" + formDataNew + ")");
+
+                var control = $("#divForm2");
+
+                for (var key in jsonDataOld) {
+                    if (jsonDataOld[key] != jsonDataNew[key]) {
+                        control.find("#ctrl_" + key).parent().css("background", "#FF9918");
+                    }
+                   
+                }
+            }
+            
+            parent.spinStop();
+        }
+      
+    </script>   
+</head>
+    <body>
+        <div id="divFormMain" style="display:block;">
+            
+            <div id="div3" class="ui-box" style="width:1400px;float:left;">
+                <div class="ui-box-head">
+                    <h4 class="ui-box-head-title">数据变化的历程 <span onclick='$("#divFormLog").show()' >显示</span><span  onclick='$("#divFormLog").hide()'>隐藏</span></h4>
+                    <span class="ui-box-head-text"> </span>
+                    <a href="#" class="ui-box-head-more"> </a>
+                </div>
+                <div class="ui-box-container">
+                    <div class="ui-box-content">
+                        <div id="divFormLog">
+                            列表
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+             <div id="div5" class="ui-box" style="width:1400px;float:left;">
+                <div class="ui-box-head">
+                    <h4 class="ui-box-head-title">操作信息 <span onclick='$("#divFormLog").show()' >显示</span><span  onclick='$("#divFormLog").hide()'>隐藏</span></h4>
+                    <span class="ui-box-head-text"> </span>
+                    <a href="#" class="ui-box-head-more"> </a>
+                </div>
+                <div class="ui-box-container">
+                    <div class="ui-box-content">
+                        <div id="divFormOperate">
+                            操作人等信息
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="div1" class="ui-box" style="width:700px;float:left;">
+                <div class="ui-box-head">
+                    <h4 class="ui-box-head-title">保存前信息</h4>
+                    <span class="ui-box-head-text"> </span>
+                    <a href="#" class="ui-box-head-more"> </a>
+                </div>
+                <div class="ui-box-container">
+                    <div class="ui-box-content">
+                        <div id="divForm1">
+        
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+              <div id="div2" class="ui-box" style="width:700px;float:left;">
+                <div class="ui-box-head">
+                    <h4 class="ui-box-head-title">保存后信息</h4>
+                    <span class="ui-box-head-text"> </span>
+                    <a href="#" class="ui-box-head-more"> </a>
+                </div>
+                <div class="ui-box-container">
+                    <div class="ui-box-content">
+                        <div id="divForm2">
+        
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+              <div id="div4" class="ui-box" style="width:700px;float:left;">
+                <div class="ui-box-head">
+                    <h4 class="ui-box-head-title">提交的数据</h4>
+                    <span class="ui-box-head-text"> </span>
+                    <a href="#" class="ui-box-head-more"> </a>
+                </div>
+                <div class="ui-box-container">
+                    <div class="ui-box-content">
+                        <div id="divForm3">
+        
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+   
+    </body>
+</html>

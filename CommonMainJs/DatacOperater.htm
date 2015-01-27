@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>操作日志的详细页面，还有跳转功能</title>
+    <script  type="text/javascript" src="/boot.js"></script>
+    <script type="text/javascript" >
+        var para;
+        var dbid;
+        var control;
+        //
+        var pageKind = "form";     //表单页面
+   
+        var form1;
+
+        function jsReady() {
+            window.formCallback = formCallback_0;
+            
+            parent.spinStart();
+
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            myFormLoad();
+        }
+
+        function formCallback_0(formState) {
+
+            $("#divFormMain").show();
+            parent.spinStop();
+
+            var kind = $("#ctrl_1034050");
+            switch (kind.val()) {
+                case "51":
+                case "52":
+                case "53":
+                case "54":
+                    //有详细记录，跳转
+                    myFormLoad2();
+                     
+                    break;
+                default:
+                    //没有详细日志
+                    $("#msg").html("该操作没有引起数据变化！");
+                    break;
+            }
+        }
+        
+        function myFormLoad2() {
+            para = $.getUrlParameter(document);
+ 
+            var commandInfo = {
+                onTimeOut: parent.showLoginDiv,
+                dataBaseId: dbid
+            };
+
+            //创建表单
+            var formEvent = {
+                control: $("#divForm2"),
+                divID: "#divForm2",
+                window: window,
+                moduleID: "-20",                     //对应的模块ID
+                masterPageViewID: "-2005",           //主页面视图ID
+                dataID: $("#ctrl_1034010").val(),                //记录ID
+                buttonId: -2001                  //对应的按钮ID
+
+            };
+
+            formEvent.callback = function () {
+                //alert("1完成");
+                //CommonMainJs/DataChangeList.htm?v=2.11&mdid=&ppvid=&mpvid=&fpvid=&bid=&id=38&frid="38"&frids="38"&ids=&1=1
+                
+                var btnInfo = {
+                    ButtonID: -2201,
+                    BtnTitle: "",
+                    WebWidth: 1700,
+                    WebHeight: 700,
+                    URL: "/CommonMainJs/DataChangeList.htm",
+                    OpenModuleID: -22,
+                    parentPVid: -22,
+                    OpenPageViewID: -2205,
+                    FindPageViewID: -2202
+                };
+
+                var tableId = $("#ctrl_1036030").val();
+                var dataId = $("#ctrl_1036040").val();
+
+                var other = "query=c1036030:" + tableId + ",c1036040:" + dataId;
+                parent.IndexOpenWeb(btnInfo, $("#ctrl_1034010").val(), "-2", "-2", -2, other);
+
+                //关闭窗体
+                if (para.bid != "-2201")
+                    parent.formClose(para.bid);
+
+            };
+            form1 = new Nature.Controls.Form(formEvent, commandInfo, para);
+            form1.create();
+             
+        }
+           
+      
+    </script>   
+</head>
+    <body>
+        <div id="divFormMain" style="display:none;">
+            <div id="divForm">
+
+            </div>
+            <div id="divForm2">
+
+            </div>
+           <div style="text-align:center">
+                <span id="msg"></span><br/>
+                <input type="button" name="BtnSave" class="input_01" value=" 关　　闭 " id="BtnClose" onclick="myClose();" />
+           
+            </div>
+        </div>
+   
+    </body>
+</html>

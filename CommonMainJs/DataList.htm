@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+
+    <script type="text/javascript" language="javascript">
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "list";     //列表页面
+
+        var pagerList = {};
+
+        function jsReady() {
+             
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+
+            pagerList = new Nature.Pager.DataList(window, dbid);
+            
+            pagerList.ListLoad(selectDataChange);
+
+            //if (window.confirm("aaa")) {
+            //    myListLoad2();
+            //}
+            //$("#divSearch").drag({ isDragTmpDiv: false });titleBar: "span_title",
+            //$("#divFloatSearch").drag({  isDragTmpDiv: false });
+            //{"itemType":"sql","width":"0","sql":"SELECT pidall AS id ,txt  FROM  V_FU_List_ModuleDropDownList ORDER BY DisOrder","isChange":"-1"}
+
+        }
+
+        function st() {
+            StressTestPagerTurn($("#stNoStart").val(), $("#stNoEnd").val(), $("#stCount").val(), $("#stUserCount").val());
+        }
+
+         //
+        function selectDataChange() {
+            if (typeof isExcel != "undefined" && isExcel == true) {
+              
+                //导出excel状态
+                var pagerIndex = pager.getPagerInfo.thisPageIndex;
+                var pagerCount = outputExcel.info.pagerNoEnd;
+               
+                outputExcel.inputExcelData(pagerIndex);
+
+                if (pagerIndex < pagerCount) {
+                    PagerTurn(pagerIndex + 1);//翻到下一页
+                } else {
+                    //这是最后一页，把状态改回来
+                    isExcel = false;
+                    //保存
+                    outputExcel.saveExcel("excel.xls");
+                    
+                    //翻到第一页
+                    //PagerTurn(1);
+                }
+            }
+             
+        }
+        
+       
+
+
+    </script>
+
+</head>
+<body>
+    <div id="divMain" style="display: none;">
+        <div id="divButtondivSearch">
+            <div id="divButton"></div>
+        </div>
+        <div style="clear: both;"></div>
+        <div id="divSearch" style="border: 0px bisque solid;">
+            <div>
+                <form id="dataForm1">
+                    <div id="divSearchDetail" style="float: left;">暂无</div>
+                    <div id="divSearchBtn" style="float: left;"></div>
+                </form>
+            </div>
+
+        </div>
+        <div style="clear: both;"></div>
+        <div id="divQuickPage"></div>
+        <div id="divDataList"></div>
+        <div id="divQuickPage1"></div>
+        <div id="divFloatSearch" class="layer_div_c" style="display: none;">
+            <span id="span_title" class="layer_title">查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+            <form id="dataForm2">
+                <div id="divFloatSearchDetail"></div>
+            </form>
+            <span class="layer_title layer_footer"><span id="btnFind"></span></span>
+        </div>
+        
+        <div>
+            <span onclick="ouputExcel()">导出excel</span> &nbsp;&nbsp;&nbsp;<span onclick="st()">压力测试 </span>
+            人数：<input id="stUserCount" type="text" value="1" />
+            次数：<input id="stCount" type="text" value="100" />
+            页号开始：<input id="stNoStart" type="text" value="1" />
+            页号结束：<input id="stNoEnd" type="text" value="10" />
+
+        </div>
+    </div>
+</body>
+</html>

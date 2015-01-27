@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+    <style type="text/css">
+        #divFloatSearch{   
+            background-color:#d2eefd ;   
+            border: 1px solid #99bbe8;   
+            padding:5px;
+            position:absolute;   
+            
+            color: #15428b;
+        } 
+        #divSearchDetail {
+            float: left;
+        }
+        .cssFind {
+            float: left;
+        }
+        #divDataList {
+            clear: both;
+        }
+    </style>
+
+    <script type="text/javascript" language="javascript">
+        var dbid = "";
+        var para ;
+        var fwdbid = dbid;
+        var aQuery = { c10084020: "7,8" };
+        var pageKind = "list";     //列表页面
+
+        var pagerList = {};
+
+        function jsReady() {
+            dbid = "2," + $.cookie("ServicesDataBaseID");
+            pagerList = new Nature.Pager.DataList(window, dbid);
+
+            pagerList.ListLoad();
+        }
+        
+    </script>
+
+    </head>
+<body>
+<div id="divMain"> 
+        <div id="divButton"></div>
+        <div id="divSearch"><div class="cssFind">当前查询条件：</div>
+            <div ><form id="dataForm1"><div id="divSearchDetail"></div><div id="divSearchBtn"></div></form></div>
+        </div>
+        <div id="divQuickPage"></div>
+        <div id="divDataList"></div>
+        <div id="divQuickPage1"></div>
+        <div id="divFloatSearch"  style="display:none;">
+            <span id="span_title" style="width:95%; float:left;">查询条件 <a href="javascript:void(0)" id="A2">X</a></span>
+            <form id="dataForm2"><div id="divFloatSearchDetail"  ></div></form>
+        </div>
+    </div>
+</body>
+</html>

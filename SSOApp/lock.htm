@@ -1,0 +1,649 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>锁定行列</title>
+    <script type="text/javascript" src="http://lcnatureresource.nature.com/Scripts/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript">
+
+        var Lock = function(info) {
+            this.lockInfo = {
+                win: window,
+                doc: window.document,
+                tableId: "grid",        //要锁定的表
+                tableDom: "",           //锁定表的jQuery对象
+                lockRowSet: 1,          //锁定行数 设定值
+                lockColumnSet: 1,       //锁定列数 设定值
+                lockRow: 1,             //锁定行数 根据实际情况设定是否需要锁定
+                lockColumn: 1,          //锁定列数 根据实际情况设定是否需要锁定
+
+                tableWidth: 0,      //锁定的table的宽度
+                divWidth:0,         //锁定table的div的宽度 0：取窗口的宽度；负数：在窗口的宽度基础上减掉的宽度
+                divHeight: 0,       //锁定table的div的高度 0：取窗口的高度；负数：在窗口的宽度基础上减掉的高度
+
+                divWidthSet: 0,         //锁定table的div的宽度 0：取窗口的宽度；负数：在窗口的宽度基础上减掉的宽度
+                divHeightSet: 0,       //锁定table的div的高度 0：取窗口的高度；负数：在窗口的宽度基础上减掉的高度
+
+
+                leftWidth: 0,       //锁定的列的总宽度
+                headHeight: 0,       //锁定行的总高度
+                
+                divLog:"",          //显示日志的div
+                divMain: "",            //table外面的div
+                divHead: "",            //表头的div    
+                divHeadMid: "",         //表头的左面和锁定列交叉的div
+                divHeadMove: "",        //表头里需要横向滚动的div
+                
+                divBody: "",            //非表头部分
+                divLeft: "",            //非表头的左侧锁定部分
+                divBodyMove: "",         //表的不锁定的部分
+
+                tblHeadMid: "",         //表头的左面和锁定列交叉的table
+                tblHeadMove: "",        //表头里需要横向滚动的table
+                
+                tblLeft: "",            //非表头的左侧锁定部分table
+                 
+                //各种偏移，比如 td的padding 等
+                paddingWidth: 2,
+                paddingHeight: 2,
+                
+                lockLeftWidth: 0,       //锁定的列的总宽度
+                lockHeadHeight: 0,       //锁定行的总高度
+                
+                tdWidthOld: [],         //拆分前列的宽度集合
+                trHeightOld: [],        //拆分前列的高度集合
+                
+                tdWidth: [],            //列的宽度集合
+                trHeight: []            //列的高度集合
+                
+            };
+
+            var lockInfo = this.lockInfo;
+            
+            //初始化
+            var init = function () {
+                if (typeof info.divWidth != "undefined") lockInfo.divWidthSet = info.divWidth;
+                if (typeof info.divHeight != "undefined") lockInfo.divHeightSet = info.divHeight;
+
+                if (typeof info.lockRow != "undefined") lockInfo.lockRowSet = info.lockRow;
+                if (typeof info.lockColumn != "undefined") lockInfo.lockColumnSet = info.lockColumn;
+
+                if (typeof info.window == "undefined")
+                    lockInfo.win = window;
+                else
+                    lockInfo.win = info.window;
+                
+                lockInfo.doc = info.window.document;
+                lockInfo.tableId = info.tableId;
+                lockInfo.tableDom = $("#" + info.tableId,lockInfo.doc);
+
+                lockInfo.divLog = $("#div__log", lockInfo.doc);
+                
+                //计算偏移
+                var th = lockInfo.tableDom.find("th:first");
+                if (th.length == 0) th = lockInfo.tableDom.find("td:first");
+                
+                lockInfo.paddingWidth = th.css("padding-left").replace("px", "") * 1 + th.css("padding-right").replace("px", "") * 1;
+                lockInfo.paddingHeight = th.css("padding-top").replace("px", "") * 1 + th.css("padding-bottom").replace("px", "") * 1;
+
+                log("paddingWidth", lockInfo.paddingWidth);
+                log("paddingHeight", lockInfo.paddingHeight);
+
+                //获取div的宽高
+                getDivWidthHeight();
+                
+            };
+
+            //根据属性和实际情况，设置div的宽度和高度
+            var getDivWidthHeight = function() {
+                if (lockInfo.divWidthSet <= 0) {
+                    var winWidth = $(info.window).width();
+                    lockInfo.divWidth = winWidth + lockInfo.divWidthSet;
+                } else {
+                    lockInfo.divWidth = lockInfo.divWidthSet;
+                }
+                
+                if (lockInfo.divHeightSet <= 0) {
+                    var winHeight = $(info.window).height();
+                    lockInfo.divHeight = winHeight + lockInfo.divHeightSet;
+                } else {
+                    lockInfo.divHeight = lockInfo.divHeightSet;
+                }
+
+            };
+           
+            //开始锁定
+            this.lock = function () {
+                getOldWidhHeight();     //获取拆分前的列宽和行高
+                getLockWidhHeight();    //获取锁定的宽度和高度
+
+                createDiv();            //创建div
+                createTable();          //创建、拆分table
+              
+               
+                moveTableTrTd();        //移动表格
+            
+                getWidthHeight();       //获取移动后的宽高
+              
+                //复制表格属性
+                myMergeAttributes(lockInfo.tblHeadMid[0], lockInfo.tableDom[0]);
+                myMergeAttributes(lockInfo.tblHeadMove[0], lockInfo.tableDom[0]);
+                myMergeAttributes(lockInfo.tblLeft[0], lockInfo.tableDom[0]);
+               
+
+                setWidth();             //设置宽度
+                setHeight();            //设置高度
+                
+                setDivSize();           //设置div的大小
+                
+            };
+
+            //获取拆分前的talbe的td的宽度和高度，即列宽和行高
+            var getOldWidhHeight = function () {
+                //遍历原表，获取宽高
+                log("开始获取原表的列宽和行高。");
+                lockInfo.tableDom.find("tr").each(function (i) {
+                    var tr = $(this);
+                    if (i == 0) {
+                        //第一行，获取列宽
+                        tr.find("th,td").each(function (j) {
+                            var td = $(this);
+                            //记录列宽
+                            lockInfo.tdWidthOld.push(td.width());// + lockInfo.paddingWidth;
+                            log("tdWidth[" + j + "]", td.width());
+                        });
+                        log("");
+                    }
+                    //记录行高
+                    lockInfo.trHeightOld.push(tr.height());// + lockInfo.paddingWidth;
+                    log("trHeight[" + i + "]", tr.height());
+
+                });
+                log("获取原表的列宽和行高结束。<br/>");
+
+            };
+            
+            //移动前获取锁定行列的宽高
+            var getLockWidhHeight = function () {
+                //获取锁定行的总高度
+                for (var i = 0; i < lockInfo.lockRow; i++) {
+                    lockInfo.lockHeadHeight += lockInfo.trHeightOld[i]; // + lockInfo.paddingWidth;
+                }
+                
+                //获取锁定列的总宽度
+                for (i = 0; i < lockInfo.lockColumn; i++) {
+                    lockInfo.lockLeftWidth += lockInfo.tdWidthOld[i]; // + lockInfo.paddingWidth;
+                }
+                  
+            };
+
+            //创建div，设置css，加滚动事件
+            var createDiv = function() {
+                lockInfo.divMain = $("#div__Main", lockInfo.doc);
+                if (lockInfo.divMain.length == 0) {
+                    lockInfo.divMain = $("<div id='div__Main'  style='border:1px #ddd solid;'></div>");
+                    lockInfo.tableDom.before(lockInfo.divMain);
+                }
+
+                lockInfo.divMain.width(lockInfo.divWidth);
+                lockInfo.divMain.height(lockInfo.divHeight);
+
+                lockInfo.divHead = $("#div__Head", lockInfo.doc);
+                if (lockInfo.divHead.length == 0) {
+                    lockInfo.divHead = $("<div id='div__Head' style='border:1px #ddd solid;'></div>");
+                    lockInfo.divMain.append(lockInfo.divHead);
+                }
+                
+                lockInfo.divHeadMid = $("#div__HeadMid", lockInfo.doc);
+                if (lockInfo.divHeadMid.length == 0) {
+                    lockInfo.divHeadMid = $("<div id='div__HeadMid' style='border:1px #ddd solid;float:left;'></div>");
+                    lockInfo.divHead.append(lockInfo.divHeadMid);
+                }
+                lockInfo.divHeadMove = $("#div__HeadMove", lockInfo.doc);
+                if (lockInfo.divHeadMove.length == 0) {
+                    lockInfo.divHeadMove = $("<div id='div__HeadMove' style='border:1px #ddd solid;'></div>");
+                    lockInfo.divHead.append(lockInfo.divHeadMove);
+                }
+                
+                lockInfo.divBody = $("#div__Body", lockInfo.doc);
+                if (lockInfo.divBody.length == 0) {
+                    lockInfo.divBody = $("<div id='divBody' style='border:1px #ddd solid;'></div>");
+                    lockInfo.divMain.append(lockInfo.divBody);
+                }
+                lockInfo.divLeft = $("#div__Left", lockInfo.doc);
+                if (lockInfo.divLeft.length == 0) {
+                    lockInfo.divLeft = $("<div id='div__Left' style='border:1px #ddd solid;float:left;'></div>");
+                    lockInfo.divBody.append(lockInfo.divLeft);
+                }
+                lockInfo.divBodyMove = $("#div__BodyMove", lockInfo.doc);
+                if (lockInfo.divBodyMove.length == 0) {
+                    lockInfo.divBodyMove = $("<div id='div__BodyMove' style='border:1px #ddd solid;'></div>");
+                    lockInfo.divBody.append(lockInfo.divBodyMove);
+                }
+
+                //加滚动事件
+                lockInfo.divBodyMove.scroll(function () {
+                    lockInfo.divHeadMove.scrollLeft(lockInfo.divBodyMove.scrollLeft());
+                    lockInfo.divLeft.scrollTop(lockInfo.divBodyMove.scrollTop());
+                });
+                
+                //设置body的div可以出滚动条
+                lockInfo.divBodyMove.css("overflow", "auto");
+                //设置里面的div不显示滚动条，固定大小
+                lockInfo.divHeadMove.css("overflow", "hidden");
+                lockInfo.divLeft.css("overflow", "hidden");
+
+            };
+            
+            //创建table
+            var createTable = function() {
+                //创建表头滚动的table
+                lockInfo.tblHeadMove = $("#tbl__HeadMove", lockInfo.doc);
+                if (lockInfo.tblHeadMove.length == 0) {
+                    lockInfo.tblHeadMove = $("<table id='tbl__HeadMove'>");
+                    lockInfo.divHeadMove.append(lockInfo.tblHeadMove);
+                }
+
+                //创建表头交叉的部分的table  
+                lockInfo.tblHeadMid = $("#tbl__HeadMid", lockInfo.doc);
+                if (lockInfo.tblHeadMid.length == 0) {
+                    lockInfo.tblHeadMid = $("<table id='tbl__HeadMid'>");
+                    lockInfo.divHeadMid.append(lockInfo.tblHeadMid);
+                }
+
+                //创建锁定列的table  
+                lockInfo.tblLeft = $("#tbl__Left", lockInfo.doc);
+                if (lockInfo.tblLeft.length == 0) {
+                    lockInfo.tblLeft = $("<table id='tbl__Left'>");
+                    lockInfo.divLeft.append(lockInfo.tblLeft);
+                }
+            };
+            
+            
+            //拆分 tr td
+            var moveTableTrTd = function (){
+                //遍历tr，把锁定的标题移动过来
+                lockInfo.tableDom.find("tr").each(function(i) {
+                    if (i < lockInfo.lockRow) {
+                        var tr = $(this);
+                       
+                        var trMid = $("<tr>");
+                        tr.find("th").each(function(j) {
+                            if (j < lockInfo.lockColumn) {
+                                trMid.append(this);
+                            }
+                        });
+                        tr.find("td").each(function (j) {
+                            if (j < lockInfo.lockColumn) {
+                                trMid.append(this);
+                            }
+                        });
+                        //交叉的部分
+                        lockInfo.tblHeadMid.append(trMid);
+
+                        //剩下的移动到headMove里。
+                        lockInfo.tblHeadMove.append(tr);
+
+                    }
+                });                
+                 
+                //遍历tr，把锁定的列移动过来
+                lockInfo.tableDom.find("tr").each(function (i) {
+                    var tr = $(this);
+
+                    if (0 == 0) {
+                        var trLeft = $("<tr>");
+                        
+                        tr.find("td").each(function (j) {
+                            if (j < lockInfo.lockColumn) {
+                                trLeft.append(this);
+                            }
+                        });
+                        //左侧锁定的列
+                        lockInfo.tblLeft.append(trLeft);
+
+                    }
+                });
+                
+                //把剩下的挪过去
+                lockInfo.divBodyMove.append(lockInfo.tableDom);
+                
+            };
+
+
+            //获取列宽和行高
+            var getWidthHeight = function() {
+                lockInfo.tableDom.find("tr").each(function (i) {
+                    var tr = $(this);
+                    
+                    if (i == 0) {
+                        //第一行，统计列宽度
+                        tr.find("td").each(function(j) {
+                            var td = $(this);
+                            //记录列宽
+                            lockInfo.tdWidth.push(td.width());
+                        });
+                    }
+                    
+                    //记录行高度
+                    lockInfo.trHeight.push(tr.height());
+                    
+                });
+            };
+            
+            //设置head的列宽
+            var setWidth = function () {
+
+                lockInfo.divLeft.width(lockInfo.lockLeftWidth).height("300px");
+                lockInfo.divHeadMid.width(lockInfo.lockLeftWidth);
+                lockInfo.tblHeadMid.width(lockInfo.lockLeftWidth);
+
+                lockInfo.divHeadMove.width("480");
+
+                //表头移动部分的th的宽度
+                lockInfo.tblHeadMove.find("tr").each(function (i) {
+                    if (i == lockInfo.lockRow - 1) {
+                        var tr = $(this);
+                        //第一行，设置列宽度+ lockInfo.paddingWidth
+                        tr.find("th").each(function (j) {
+                            if (j < lockInfo.tdWidth.length )
+                                $(this).width(lockInfo.tdWidth[j] );
+                            
+                        });
+                    }
+                       
+                });
+            };
+
+            //设置left的高度+ lockInfo.paddingHeight
+            var setHeight = function () {
+                lockInfo.tblLeft.find("tr").each(function(i) {
+                    var tr = $(this);
+                    if (i < lockInfo.trHeight.length)
+                        tr.height(lockInfo.trHeight[i] );
+                });
+            };
+
+            //设置div的宽度
+            var setDivSize = function() {
+                
+                lockInfo.divBodyMove.width("500px").height("400px");
+            };
+            
+            //赋值对象属性的函数。IE 里可以用 mergeAttributes，但是其他浏览器不支持，所以只好自己写个函数。
+            var myMergeAttributes = function(target, source) {
+                if (document.all) {
+                    target.mergeAttributes(source);
+                } else {
+                    var attrs = source.attributes, i = attrs.length - 1;
+                    for (; i >= 0; i--) {
+                        var name = attrs[i].name;
+                        switch (name.toLowerCase()) {
+                        case 'id':
+                        case 'height':
+                        case 'width':
+                            continue;
+                        }
+
+                        if (attrs[i].value != null) {
+                            target.setAttribute(name, attrs[i].value);
+                        }
+                    }
+                }
+            };
+            
+            //记录日志
+            var log = function (msg1, msg2) {
+                if (typeof msg2 == "undefined")
+                    lockInfo.divLog.append(msg1 + "<br/>");
+                else
+                    lockInfo.divLog.append(msg1 + "：" + msg2 + "<br/>");
+            };
+            
+            init();
+
+        };
+
+        window.onload = function () {
+            var lk = new Lock({
+                window: window,
+                tableId: "grid"
+            });
+
+            lk.lock();
+            
+            $.ajax({
+                type: "GET",
+                dataType: "josn",
+                cache: false,
+                url: "http://lcnatureresource.nature.com/Data/GetData.ashx?c5507010=1%601000&c5507010_2=1000&c5507030=&c5507040=&c5507070=&action=list&mdid=342&mpvid=34201&fpvid=34202&pageno=2&hasKey=1&dbid=2,4",               /*Nature.resourceUrl + "/Data/GetData.ashx",*/
+                data: {},
+                //timeout: 2000,
+                error: function () {
+                    alert("获取的时候发生错误！");
+
+                },
+
+                success: function (msg) {
+                    alert(msg);
+
+                }
+            });
+        };
+        
+    </script>
+
+</head>
+<body>
+    <div id="test">
+        <table id="grid" border="1" rules="all" class="table_default1" style="width: 1679px;">
+            <tbody>
+                <tr id="tr0" class="first" >
+                    <th >编号</th>
+                    <th >模块ID</th>
+                    <th  colspan="1">视图ID</th>
+                    <th  colspan="1">视图ID</th>
+                    <th >类型</th>
+                    <th >状态</th>
+                    <th>url</th>
+                    <th >操作人IP</th>
+                </tr>
+                
+                <tr id="tr37096" index="1" class="css_tr_c2" >
+                    <td id="td1" style="text-align: left;" >37096</td>
+                    <td id="td2" style="text-align: left;" >130</td>
+                    <td id="td3" style="text-align: left;" >13003</td>
+                    <td id="td4" style="text-align: left;" >0</td>
+                    <td id="td5" style="text-align: left;" >翻页</td>
+                    <td id="td6" style="text-align: left;" >未知</td>
+                    <td id="td7" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13003&amp;fpvid=13004&amp;frid=5700&amp;frids=5700&amp;pageno=1&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113105412</td>
+                    <td id="td8" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37095" index="2" class="alt" >
+                    <td id="td9" style="text-align: left;" >37095</td>
+                    <td id="td10" style="text-align: left;" >130</td>
+                    <td id="td11" style="text-align: left;" >13003</td>
+                    <td id="td12" style="text-align: left;" >0</td>
+                    <td id="td13" style="text-align: left;" >翻页</td>
+                    <td id="td14" style="text-align: left;" >未知</td>
+                    <td id="td15" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13003&amp;fpvid=13004&amp;frid=5700&amp;frids=5700&amp;pageno=1&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113104169</td>
+                    <td id="td16" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37094" index="3" class="css_tr_c2" >
+                    <td id="td17" style="text-align: left;">37094</td>
+                    <td id="td18" style="text-align: left;" >130</td>
+                    <td id="td19" style="text-align: left;" >13003</td>
+                    <td id="td20" style="text-align: left;" >0</td>
+                    <td id="td21" style="text-align: left;" >翻页</td>
+                    <td id="td22" style="text-align: left;" >未知</td>
+                    <td id="td23" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13003&amp;fpvid=13004&amp;frid=5700&amp;frids=5700&amp;pageno=1&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113103918</td>
+                    <td id="td24" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37093" index="4" class="alt" >
+                    <td id="td25" style="text-align: left;" >37093</td>
+                    <td id="td26" style="text-align: left;" >130</td>
+                    <td id="td27" style="text-align: left;" >13003</td>
+                    <td id="td28" style="text-align: left;" >0</td>
+                    <td id="td29" style="text-align: left;" >翻页</td>
+                    <td id="td30" style="text-align: left;" >未知</td>
+                    <td id="td31" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13003&amp;fpvid=13004&amp;frid=5700&amp;frids=5700&amp;pageno=1&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113101205</td>
+                    <td id="td32" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37092" index="5" class="css_tr_c2" >
+                    <td id="td33" style="text-align: left;" >37092</td>
+                    <td id="td34" style="text-align: left;" >130</td>
+                    <td id="td35" style="text-align: left;" >13002</td>
+                    <td id="td36" style="text-align: left;" >0</td>
+                    <td id="td37" style="text-align: left;" >翻页</td>
+                    <td id="td38" style="text-align: left;" >未知</td>
+                    <td id="td39" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=12&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113099195</td>
+                    <td id="td40" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37091" index="6" class="alt" >
+                    <td id="td41" style="text-align: left;" >37091</td>
+                    <td id="td42" style="text-align: left;" >130</td>
+                    <td id="td43" style="text-align: left;" >13002</td>
+                    <td id="td44" style="text-align: left;" >0</td>
+                    <td id="td45" style="text-align: left;" >翻页</td>
+                    <td id="td46" style="text-align: left;" >未知</td>
+                    <td id="td47" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=13&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113092609</td>
+                    <td id="td48" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37090" index="7" class="tr-green" >
+                    <td id="td49" style="text-align: left;" >37090</td>
+                    <td id="td50" style="text-align: left;" >130</td>
+                    <td id="td51" style="text-align: left;" >13002</td>
+                    <td id="td52" style="text-align: left;" >0</td>
+                    <td id="td53" style="text-align: left;" >翻页</td>
+                    <td id="td54" style="text-align: left;" >未知</td>
+                    <td id="td55" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=11&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113089593</td>
+                    <td id="td56" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37089" index="8" class="alt" >
+                    <td id="td57" style="text-align: left;" >37089</td>
+                    <td id="td58" style="text-align: left;" >130</td>
+                    <td id="td59" style="text-align: left;" >13002</td>
+                    <td id="td60" style="text-align: left;" >0</td>
+                    <td id="td61" style="text-align: left;" >翻页</td>
+                    <td id="td62" style="text-align: left;" >未知</td>
+                    <td id="td63" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=9&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113088685</td>
+                    <td id="td64" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37088" index="9" class="css_tr_c2" >
+                    <td id="td65" style="text-align: left;" >37088</td>
+                    <td id="td66" style="text-align: left;" >130</td>
+                    <td id="td67" style="text-align: left;" >13002</td>
+                    <td id="td68" style="text-align: left;" >0</td>
+                    <td id="td69" style="text-align: left;" >翻页</td>
+                    <td id="td70" style="text-align: left;" >未知</td>
+                    <td id="td71" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=7&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113087686</td>
+                    <td id="td72" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37087" index="10" class="alt" >
+                    <td id="td73" style="text-align: left;">37087</td>
+                    <td id="td74" style="text-align: left;" >130</td>
+                    <td id="td75" style="text-align: left;" >13002</td>
+                    <td id="td76" style="text-align: left;" >0</td>
+                    <td id="td77" style="text-align: left;" >翻页</td>
+                    <td id="td78" style="text-align: left;" >未知</td>
+                    <td id="td79" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=5&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113086485</td>
+                    <td id="td80" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37086" index="11" class="css_tr_c2" >
+                    <td id="td81" style="text-align: left;" >37086</td>
+                    <td id="td82" style="text-align: left;" >130</td>
+                    <td id="td83" style="text-align: left;" >13002</td>
+                    <td id="td84" style="text-align: left;" >0</td>
+                    <td id="td85" style="text-align: left;" >翻页</td>
+                    <td id="td86" style="text-align: left;" >未知</td>
+                    <td id="td87" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=1&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113084818</td>
+                    <td id="td88" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37085" index="12" class="alt" >
+                    <td id="td89" style="text-align: left;" >37085</td>
+                    <td id="td90" style="text-align: left;" >130</td>
+                    <td id="td91" style="text-align: left;" >13002</td>
+                    <td id="td92" style="text-align: left;" >0</td>
+                    <td id="td93" style="text-align: left;" >翻页</td>
+                    <td id="td94" style="text-align: left;" >未知</td>
+                    <td id="td95" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=V&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=1&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113080563</td>
+                    <td id="td96" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37084" index="13" class="css_tr_c2" >
+                    <td id="td97" style="text-align: left;" >37084</td>
+                    <td id="td98" style="text-align: left;" >130</td>
+                    <td id="td99" style="text-align: left;" >13002</td>
+                    <td id="td100" style="text-align: left;" >0</td>
+                    <td id="td101" style="text-align: left;" >翻页</td>
+                    <td id="td102" style="text-align: left;" >未知</td>
+                    <td id="td103" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=P&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=1&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113078356</td>
+                    <td id="td104" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37083" index="14" class="alt" >
+                    <td id="td105" style="text-align: left;" >37083</td>
+                    <td id="td106" style="text-align: left;" >130</td>
+                    <td id="td107" style="text-align: left;" >13002</td>
+                    <td id="td108" style="text-align: left;" >0</td>
+                    <td id="td109" style="text-align: left;" >翻页</td>
+                    <td id="td110" style="text-align: left;" >未知</td>
+                    <td id="td111" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;c1002010=&amp;c1002020=&amp;c1002040=U&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=1&amp;hasKey=1&amp;dbid=1,2&amp;_=1388113076119</td>
+                    <td id="td112" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37082" index="15" class="css_tr_c2" >
+                    <td id="td113" style="text-align: left;" >37082</td>
+                    <td id="td114" style="text-align: left;" >130</td>
+                    <td id="td115" style="text-align: left;" >13003</td>
+                    <td id="td116" style="text-align: left;" >0</td>
+                    <td id="td117" style="text-align: left;" >翻页</td>
+                    <td id="td118" style="text-align: left;" >未知</td>
+                    <td id="td119" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13003&amp;fpvid=13004&amp;frid=5700&amp;frids=5700&amp;pageno=1&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113054359</td>
+                    <td id="td120" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37081" index="16" class="alt" >
+                    <td id="td121" style="text-align: left;" >37081</td>
+                    <td id="td122" style="text-align: left;" >130</td>
+                    <td id="td123" style="text-align: left;" >13002</td>
+                    <td id="td124" style="text-align: left;" >0</td>
+                    <td id="td125" style="text-align: left;" >翻页</td>
+                    <td id="td126" style="text-align: left;" >未知</td>
+                    <td id="td127" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=12&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113052049</td>
+                    <td id="td128" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37080" index="17" class="css_tr_c2" >
+                    <td id="td129" style="text-align: left;" >37080</td>
+                    <td id="td130" style="text-align: left;" >130</td>
+                    <td id="td131" style="text-align: left;" >13002</td>
+                    <td id="td132" style="text-align: left;" >0</td>
+                    <td id="td133" style="text-align: left;" >翻页</td>
+                    <td id="td134" style="text-align: left;" >未知</td>
+                    <td id="td135" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=11&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113050125</td>
+                    <td id="td136" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37079" index="18" class="alt" >
+                    <td id="td137" style="text-align: left;" >37079</td>
+                    <td id="td138" style="text-align: left;" >130</td>
+                    <td id="td139" style="text-align: left;" >13002</td>
+                    <td id="td140" style="text-align: left;" >0</td>
+                    <td id="td141" style="text-align: left;" >翻页</td>
+                    <td id="td142" style="text-align: left;" >未知</td>
+                    <td id="td143" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=9&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113048818</td>
+                    <td id="td144" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+                <tr id="tr37078" index="19" class="css_tr_c2" >
+                    <td id="td145" style="text-align: left;" >37078</td>
+                    <td id="td146" style="text-align: left;" >130</td>
+                    <td id="td147" style="text-align: left;" >13002</td>
+                    <td id="td148" style="text-align: left;" >0</td>
+                    <td id="td149" style="text-align: left;" >翻页</td>
+                    <td id="td150" style="text-align: left;" >未知</td>
+                    <td id="td151" style="text-align: left;">http://lcnatureresource.nature.com/Data/GetData.ashx?callback=jQuery18207057226605247706_1388110649196&amp;action=list&amp;mdid=130&amp;mpvid=13002&amp;fpvid=13004&amp;frid="56401"&amp;frids="564,56401"&amp;pageno=7&amp;hasKey=0&amp;dbid=1,2&amp;_=1388113047971</td>
+                    <td id="td152" style="text-align: left;" >192.168.3.95</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    
+    <div id="div__log"></div>
+</body>
+</html>

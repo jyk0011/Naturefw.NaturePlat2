@@ -1,0 +1,164 @@
+﻿02<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>测试缓存</title>
+    <script type="text/javascript" src="/boot.js"></script>
+  
+    <script type="text/javascript">
+           
+        var dbid  ;
+
+        var pageKind = "index";     //首页
+        
+        function jsReady() {
+            dbid = Nature.WebConfig.dbid_236Write;
+
+            var arr = [{}, {}];
+        }
+        
+        function ff() {
+            var cache = new Nature.Data.Cache.Control();
+
+            var cacheKey = "123123123";
+
+            //mdid=340&mpvid=34005&fpvid=34002&hasKey=0&dbid=2%2C4&pageno=1&_=1396851250615
+
+            var info = {
+                mdid: "340",
+                mpvid: "34005",
+                fpvid: "34002",
+                //query: ["c5500010"],
+                dataBaseId: dbid
+            };
+
+            var key = $("#ids").val().split(',');
+            cache.getData("listkey", info, cacheKey, key, function (data) {
+
+                for (var key3 in data) {
+                    
+                    var msg = $("#msg");
+                    msg.append(key3 + ":");
+                    msg.append(data[key3].title + "<br/>");
+
+                }
+            });
+
+        }
+        
+        function excel() {
+            outputExcel("<table><tr><th>ttttt</th></tr>", "excel1.xls");
+            outputExcel("<tr><td>aaa</td></tr>", "excel2.xls");
+            outputExcel("<tr><td>士大夫</td></tr>", "excel3.xls");
+            outputExcel("<tr><td>我让我发松岛枫</td></tr></table>", "excel4.xls");
+            outputExcel("copy /b excel1.xls + excel2.xls + excel3.xls + excel4.xls bbbbbb.xls ", "合并.bat");
+
+        }
+        
+        function outputExcel(excels,file) {
+            var uri = 'data:text/csv;charset=utf-8,' + excels;//+ "</table>";  \ufeff
+            var downloadLink = document.createElement("a");
+            downloadLink.href = uri;
+            downloadLink.download = file;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+        
+
+        function a() {
+            var item = $("#blog-comments-placeholder .feedbackItem");
+            
+            for (var i = 0; i < item.length ;i++) {
+                var div = $(item[i]);
+
+                var auther = div.find("a")[2];
+                //console.log($(auther).attr("href"));
+
+                var autherId = $(auther).attr("href");
+
+                var re = $("#blog-comments-placeholder .feedbackItem .feedbackCon a[href='" + autherId + "']");
+
+                for (var r = 0; r < item.length; r+=2) {
+                    var a = $(re[r]);
+                    if (a.text() == "@") {
+                        var pp2 = a.parent().parent();
+                        var pp1 = pp2.prev();
+
+                        var myRediv = $("<div style='mapping-left:50px;'>本楼层有回复，直接拽过来！</div>");
+                        
+                        pp1.css("mapping-left", "30px;");
+                        pp2.css("mapping-left", "50px;");
+                        myRediv.append(pp1);
+                        myRediv.append(pp2);
+                        div.append(myRediv);
+
+                    }
+                }
+
+            }
+        }
+        
+        //判断鼠标进入的方向，上下左右。可以调整div的宽高
+        function fangxiang() {
+            $("#wrap").bind("mouseenter mouseleave", function (e) {
+                var w = $(this).width();
+                var h = $(this).height();
+                var x = (e.pageX - this.offsetLeft - (w / 2)) * (w > h ? (h / w) : 1);
+                var y = (e.pageY - this.offsetTop - (h / 2)) * (h > w ? (w / h) : 1);
+                var direction = Math.round((((Math.atan2(y, x) * (180 / Math.PI)) + 180) / 45) + 3) % 8; //direction的值为“0,1,2,3”分别对应着“上，右，下，左”
+                //var dirName = new Array('上方','右侧','下方','左侧');
+                var dirName = new Array('右下侧', '下方', '左下方', '左侧', '左上侧', '上方', '右上侧', '右侧');
+                if (e.type == 'mouseenter') {
+                    $("#msg").html(dirName[direction] + '进入' + direction);
+                } else {
+                    $('#msg').html(dirName[direction] + '离开' + direction);
+
+                    var newW = $("#kuang").width();
+                    var newH = $("#kuang").height();
+
+                    var step = 5;
+                    switch (direction) {
+                        case 0: //右下侧
+                            newW += step; newH += step; break;
+                        case 1: //下方
+                            newW += 0; newH += step; break;
+                        case 2: //左下方
+                            newW -= step; newH += step; break;
+                        case 3: //左侧
+                            newW -= step; newH += 0; break;
+                        case 4: //左上侧
+                            newW -= step; newH -= step; break;
+                        case 5: //上方
+                            newW += 0; newH -= step; break;
+                        case 6: //右上侧
+                            newW += 10; newH -= step; break;
+                        case 7: //右侧
+                            newW += step; newH += 0; break;
+                       
+                    }
+                    $("#kuang").width(newW)
+                        .height(newH);
+
+                    $(this).css("margin-top", newH - 67);
+                    
+                }
+            });
+        }
+        
+    </script>
+
+</head>
+<body>
+    <input type="text" id="ids"/>
+    <input type="button" id="btn" value="获取" onclick="ff()"/>
+    <input type="button" id="Button1" value="导出excel" onclick="excel()"/>
+    <input type="button" id="Button2" value="鼠标进入方向" onclick="fangxiang()"/>
+    
+    <div id="kuang" style="width:500px;height: 500px;border: 1px solid #99bbe8;">
+        <div id="msg">先在右下角的div上面单击鼠标，然后缓慢移动鼠标，这时候我的大小就可以改变了。</div>
+        <div id="wrap" style="width:35px;height: 50px;border: 1px solid #99bbe8;float: right;margin-top: 433px;" onclick="fangxiang()">↖↑↗<br/>← →<br/>↙↓↘</div>
+    </div>
+
+</body>
+</html>

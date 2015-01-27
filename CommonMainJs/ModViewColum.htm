@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>修改表单里的字段</title>
+    <script type="text/javascript" src="/boot.js"></script>
+    <script type="text/javascript" >
+        var dbid;
+        var control;
+        //
+        var pageKind = "form";     //表单页面
+        var form2;
+        var pagerForm;
+
+        function jsReady() {
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            pagerForm = new Nature.Pager.DataForm(window, dbid);
+            pagerForm.FormLoad();
+
+            window.setTimeout(function () {
+                f2();
+            },500);
+        }
+         
+        //function cusJsLoad(doc, formEvent, commandControlInfo) {
+        //    f2();
+        //}
+
+        function formCallback2(formState) {
+            switch (formState) {
+                case 401:
+                    //查看
+                    $("#BtnSave").hide();
+                    $("#BtnSave2").hide();
+                    break;
+                case 402:
+                    //添加
+                    $("#BtnSave").show();
+                    $("#BtnSave2").show();
+                    break;
+                case 403:
+                case 408:
+                    //修改
+                    $("#BtnSave").val("保存并更新").show();
+                    $("#BtnSave2").hide();
+                    break;
+                case -99:
+                    formLoadThisPage();
+                    //修改
+                    break;
+            }
+        }
+        
+        function f2() {
+            //创建表单
+            var formEvent2 = {
+                control: $("#divForm2", document),
+                dataBaseId: dbid,
+                urlPara: {
+                    window: window,
+                    moduleID: "136",                     //对应的模块ID
+                    masterPageViewID: "13604",           //主页面视图ID
+                    findPageViewID: 0,
+                    dataID: $("#ctrl_1010030").val(),    //记录ID
+                    foreignID: -2,
+                    foreignIDs: -2,
+                    buttonId: "13601"                  //对应的按钮ID
+                },
+                callback:function() {
+                    var loads = new Nature.LoadScript(document);
+                    loads.js("/Scripts/UIFunction.js?v=3", function () {
+                        FormFunction();
+                    });
+                }
+
+            };
+              
+            form2 = new Nature.Controls.Form(formEvent2);
+            form2.create();
+              
+
+            $("#divFormMain").fadeIn("normal", function () {
+                parent.spinStop();
+            });
+        }
+
+        function myCheck() {
+            var re = true;// checkData();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveClose);
+                } else {
+                    saveClose();
+                }
+            }
+        }
+
+        function myCheck2() {
+            var re = true;//form.checkForm();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveContunie);
+                } else {
+                    saveContunie();
+                }
+            }
+        }
+
+        function checkData() {
+            //自带的验证功能。
+            var re = form.checkForm();
+
+            if (re == true) {
+                //验证通过，查看是否有自定义的js文件的验证
+                if (typeof (cuscheck) != "undefined") {
+                    //有自定义的验证，执行
+                    re = cuscheck();
+                }
+            }
+            return re;
+        }
+
+        function saveClose() {
+            pagerForm.form.savaData(function (kind, id) {
+                //保存结
+                //alert(id);
+                //myClear();
+
+                form2.savaData(function (kind, id) {
+                    //保存结
+                    //alert(id);
+                    //myClear();
+                    pagerForm.form.formLoadThis();
+
+                    //关闭窗体
+                    parent.formClose(para.bid);
+                });
+                
+                pagerForm.formLoadThis();
+
+            });
+        }
+
+        function saveContunie() {
+            pagerForm.form.savaData(function (kind, id) {
+                //保存结束
+                //alert(id);
+             
+                form2.savaData(function (kind, id) {
+                    //保存结
+                    //alert(id);
+                    //myClear();
+                    form2.formLoadThis();
+                     
+                });
+
+                pagerForm.myClear();
+                pagerForm.formLoadFirst();
+ 
+            });
+        }
+         
+
+    </script>  
+</head>
+ <body>
+     <div id="divFormMain" style="width: 100%">
+         <div class="form" style="width:800px;float:left;margin-right:20px">
+             <form id="dataForm">
+                 <div id="divForm">
+        
+                 </div>
+             </form>
+         </div>
+
+          <div class="form" style="width:600px;float:left;">
+               <form id="dataForm">
+                   <div id="divForm2">
+        
+                   </div>
+               </form> 
+          </div>
+
+         <div style="text-align:center;clear: both">
+             <input type="button" name="BtnSave" class="input_01" value="保存后关闭" id="BtnSave"  onclick="return myCheck();"/>
+             <input type="button" name="BtnSave" class="input_01" value="保存后继续" id="BtnSave2" onclick="return myCheck2();"   />
+             <input type="button" name="BtnSave" class="input_01" value=" 关　　闭 " id="BtnClose" onclick="myClose();" />
+           
+         </div>
+     </div>
+   
+    </body>
+</html>

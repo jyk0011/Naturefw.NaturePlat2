@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>批量修改记录</title>
+    <script type="text/javascript" src="/boot.js"></script>
+   
+    <script type="text/javascript" language="javascript">
+      
+        var dbid;
+        var fwdbid = "1";
+        
+
+        var pageKind = "list";     //列表页面
+        var form;
+        var gridForm;
+        var isEditing = false;      /*是否在编辑中*/
+        var updateDataId;           /*要修改的id*/
+
+        var tdTopList = [];         /*记录td的坐标的列表*/
+        var load ;                  //保存排序用
+
+        var drop ;          //临时的显示信息用
+
+        var isReloadGird = true;
+        
+        var pagerList = {};
+
+        /*要修改的排序信息*/
+        var orderInfo = {
+            order1Id: 1,
+            order2Id: 2,
+            kind: 0      /*0：自己；1：插入到前面；2：交换；3：插入到后面*/
+        };
+
+        var iconup  ;var iconjh  ;var icondown;
+
+        function jsReady() {
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            load = new Nature.Data.Manager();
+            pagerList = new Nature.Pager.DataList(window, dbid);
+
+            pagerList.ListLoad(selectDataChange);
+            
+            //$("#divSearch").drag({ isDragTmpDiv: false });
+
+            iconup = $('<ul id="entypo-social" class="clearfix"><li title="up-bold"></li></ul>').css("position", "absolute");
+            iconjh = $('<ul id="entypo-social" class="clearfix"><li title="retweet"></li></ul>').css("position", "absolute");
+            icondown = $('<ul id="entypo-social" class="clearfix"><li title="down-bold"></li></ul>').css("position", "absolute");
+
+            $(document.body).append(iconup.hide());
+            $(document.body).append(iconjh.hide());
+            $(document.body).append(icondown.hide());
+
+            //加鼠标移动事件，实现td的移入判断
+            $(document).mousemove(function (e) {
+
+                if ($("#divdrop").length == 0)
+                    return;
+
+                var tip = $("#divdrop");
+                tip.html("");
+                var tipOffset = tip.offset();
+                tipOffset.top += tip.height() / 2 - 15;
+                tipOffset.left += tip.width() / 2 - 15;
+                 
+                var y = e.pageY;
+                
+               
+                for (var key in tdTopList){
+                    if (y > tdTopList[key].top && y <= tdTopList[key].button) {
+                     
+                        var indexMax = $.getDivIndexHighest(undefined, document);
+
+                        orderInfo.order2Id = tdTopList[key].dataId;
+
+                        if (orderInfo.order1Id == orderInfo.order2Id) {
+                            //自己
+                            iconjh.hide();
+                            icondown.hide();
+                            iconup.hide();
+                            orderInfo.kind = 0;
+                            tip.html("自己");
+                            return;
+                        }
+                        
+                        var offxy = (y - tdTopList[key].top) / (tdTopList[key].height);
+                        if (offxy < 0.33) {
+                            if (orderInfo.kind != 1) {
+                                orderInfo.kind = 1;
+                                hideicon();
+                                iconup.show().css("z-index", indexMax);
+                            }
+                            iconup.offset(tipOffset);
+
+                        } else if (offxy < 0.67) {
+                            if (orderInfo.kind != 2) {
+                                orderInfo.kind = 2;
+                                hideicon();
+                                iconjh.show().css("z-index", indexMax);
+                            }
+                            iconjh.offset(tipOffset);
+                        } else {
+                            if (orderInfo.kind != 3) {
+                                orderInfo.kind = 3;
+                                hideicon();
+                                icondown.show().css("z-index", indexMax);
+                            }
+                            icondown.offset(tipOffset);
+                        }
+                         
+                        break;
+                    }
+                }
+
+                drop.val(orderInfo.order1Id + "up" + orderInfo.order2Id);
+
+
+            });
+            
+            var hideicon = function () {
+                iconup.hide();
+                iconjh.hide();
+                icondown.hide();
+            };
+            
+            //结束拖拽，提交排序请求
+            $(document).mouseup(function (e) {
+               
+                drop.val(orderInfo.order1Id + "up" + orderInfo.order2Id);
+
+                iconjh.hide();
+                icondown.hide();
+                iconup.hide();
+
+                if (orderInfo.kind != 0) {
+                    load.ajaxModOrderForColMeta({
+                        data: {
+                            action: "datagrid",
+                            mdid: 126,
+                            mpvid: para.id,
+                            bid: 12901,
+                            dbid: dbid,
+                            col1ID: orderInfo.order1Id,
+                            col2ID: orderInfo.order2Id,
+                            kind: orderInfo.kind
+                        },
+                        title: "修改排序",
+                        success: function(info) {
+                            if (info.err != undefined)
+                                alert(info.err);
+                            else {
+
+                            }
+                            window.setTimeout(listLoadThis,30);
+                            isReloadGird = true;
+                        }
+                    });
+                    
+                    orderInfo.kind = 0;
+
+                    $(document).dblclick();
+                }
+                
+            });
+             
+        }
+        
+        function selectDataChange() {
+            drop = $("#ctrl_1010040");
+            if (typeof gridForm == "undefined") {
+                gridForm = new Nature.Controls.GridForm({
+                    win: window,
+                    divId: "divDataList",
+                    gridView: pagerList,
+                    dataBaseId: dbid,
+                    reloadData: pagerList.listLoadThis,
+                    saveData: myCheck
+                });
+                gridForm.init();
+            } else {
+                gridForm.onPager();
+            }
+
+            $("#grid tr").each(function () {
+                //设置第一个td可以拖拽
+                $(this).find("td:eq(0)").drag({
+                    lockXy: "x",
+                    window: window,
+                    document: document,
+                    dragMove: function(x, y) {
+
+                    }
+                });
+                
+                var tr = $(this);
+                
+                //记录起始tr
+                tr.mousedown(function (e) {
+                    $(this).find("td:eq(0)").css("color", "red");
+                    var tdataId = this.id.replace("tr", "");
+                    orderInfo.order1Id = tdataId;
+                    
+                    if (isReloadGird) {
+                        isReloadGird = false;
+                        tdTopList.length = 0;
+                        $("#grid tr").each(function () {
+                            //重新记录tr的坐标
+                            var tr2 = $(this);
+                            var top = tr2.offset().top;
+                            //记录记录ID
+                            var dataId = this.id.replace("tr", "");
+
+                            tdTopList.push({
+                                top: top,
+                                button: top + tr2.height(),
+                                height: tr2.height(),
+                                dataId: dataId
+                            });
+                        });
+                    }
+                });
+
+            });
+
+        }
+        
+        function myCheck() {
+            form = gridForm.gridFormInfo.form;
+
+            var re = checkData();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveClose);
+                } else {
+                    saveClose();
+                }
+            }
+        }
+
+        function checkData() {
+            //自带的验证功能。
+            var re = form.checkForm();
+
+            if (re == true) {
+                //验证通过，查看是否有自定义的js文件的验证
+                if (typeof (cuscheck) != "undefined") {
+                    //有自定义的验证，执行
+                    re = cuscheck();
+                }
+            }
+            return re;
+        }
+
+        function saveClose() {
+            form.formEvent.dataID = gridForm.gridFormInfo.updateDataId;
+            form.savaData(function (state) {
+                //保存结
+                //alert(state);
+                listLoadThis();
+                top.spinStop();
+                
+            });
+        }
+        
+
+       
+        
+        </script>
+
+    </head>
+    <body>
+        <div id="divMain" style="display:none;">
+          <div id="divButtondivSearch">
+                <div id="divButton"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divSearch" style="border:1px #ddd solid;" >
+                <div >
+                    <form id="dataForm1"><div id="divSearchDetail" style="float:left;">请单击上面的“查询”按钮</div><div id="divSearchBtn" style="float:left;"></div></form>
+                </div>
+                
+            </div>
+            <div style="clear:both;"></div>
+                
+            <div id="divQuickPage"></div>
+            <div id="divDataList"></div>
+            <div id="divQuickPage1"></div>
+            <div id="divFloatSearch" class="layer_div_c" style="display:none;">
+                <span id="span_title" class="layer_title" >查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+                <form id="dataForm2"><div id="divFloatSearchDetail"></div></form>
+                <span class="layer_title layer_footer"><span id="btnFind"></span> </span>
+            </div>
+            
+            <form id="dataForm">
+            <div id="divForm" style="display:none"></div>
+            </form>
+           
+
+        </div>
+    </body>
+</html>

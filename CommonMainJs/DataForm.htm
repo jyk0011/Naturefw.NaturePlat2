@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>表单页面</title>
+    <script  type="text/javascript" src="/boot.js"></script>
+    <script type="text/javascript" >
+        var para;
+        var dbid;
+        var control;
+        //
+        var pageKind = "form";     //表单页面
+        var pagerForm = {};
+
+        function jsReady() {
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            pagerForm = new Nature.Pager.DataForm(window, dbid);
+            pagerForm.FormLoad();
+           
+        }
+      
+        function myCheck() {
+            var re = true;// checkData();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveClose);
+                } else {
+                    saveClose();
+                }
+            }
+        }
+
+        function myCheck2() {
+            var re = true;//form.checkForm();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveContunie);
+                } else {
+                    saveContunie();
+                }
+            }
+        }
+
+        function checkData() {
+            //自带的验证功能。
+            var re = form.checkForm();
+
+            if (re == true) {
+                //验证通过，查看是否有自定义的js文件的验证
+                if (typeof (cuscheck) != "undefined") {
+                    //有自定义的验证，执行
+                    re = cuscheck();
+                }
+            }
+            return re;
+        }
+
+        function saveClose() {
+            pagerForm.form.savaData(function (kind, id) {
+                //保存结
+                //alert(id);
+                //myClear();
+                pagerForm.formLoadThis();
+                //关闭窗体
+                parent.formClose(pagerForm.cmdInfo.urlPara.buttonId);
+            });
+        }
+
+        function saveContunie() {
+            pagerForm.form.savaData(function (kind, id) {
+                //保存结束
+                //alert(id);
+                pagerForm.form.myClear();
+                pagerForm.formLoadFirst();
+            });
+        }       
+
+    </script>   
+</head>
+    <body>
+        <div id="divFormMain" style="display:none;">
+            <form id="dataForm">
+                <div id="divForm">
+        
+                </div>
+            </form> 
+            <div style="text-align:center">
+                <input type="button" name="BtnSave" class="input_01" value="保存后关闭" id="BtnSave"  onclick="return myCheck();"/>
+                <input type="button" name="BtnSave" class="input_01" value="保存后继续" id="BtnSave2" onclick="return myCheck2();"   />
+                <input type="button" name="BtnSave" class="input_01" value=" 关　　闭 " id="BtnClose" onclick="myClose();" />
+           
+            </div>
+        </div>
+   
+    </body>
+</html>

@@ -1,0 +1,48 @@
+﻿#div_Debug{   
+    background-color:#fff ;   
+    /*background:url("img/formbk.gif");*/
+    border: 1px solid #99bbe8;   
+    padding:5px;
+    position:absolute;   
+    top:1000px;   
+    left:5px;   
+    width:200px;   
+    height:400px;
+    color: #15428b;
+    overflow: auto;
+     
+}   
+#divTab0 {
+    clear: both;
+}
+.cssDebug {
+    padding:5px;
+    border-bottom: 1px solid #eee;
+    clear: both;
+   
+}
+.layer_title{   
+    background-color:#d2eefd ;   
+    background:url("img/formbk.gif");
+    border: 1px solid #99bbe8;   
+    padding:5px;
+    position:absolute;   
+    
+    color: #15428b;
+}  
+ 
+#cssIfrmMod{   
+    border: 1px solid #99bbe8;   
+   
+}   
+OL li {margin: 8px}
+#div_Main {font-size: 12px; margin: 0px auto; width: 600px;}
+#ulTab {padding: 0px; margin: 0px 0px 0px 10px;   height: 23px;}
+#ulTab li {background: url(img/tagleft.gif) no-repeat left bottom; float: left; margin-right: 1px; list-style-type: none; height: 23px;}
+#ulTab li a {padding:0 10px; background: url(img/tagright.gif) no-repeat right bottom; float: left; color: #999; line-height: 23px; height: 23px; text-decoration: none;}
+#ulTab li.emptyTag {background: none transparent scroll repeat 0% 0%; width: 4px;}
+#ulTab li.selectTag {background-position: left top; margin-bottom: -2px; position: relative; height: 25px;}
+#ulTab li.selectTag a {background-position: right top; color: #000; line-height: 25px; height: 25px;}
+#divIframe {BORDER: #aecbd4 1px solid; padding: 1px;background-color: #fff;}
+.tagContent {padding: 2px; display: none; background: url(img/bg.gif) repeat-x;  color: #474747; height: 450px;}
+#divIframe div.selectTag {display: block;}

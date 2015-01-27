@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+
+    <script type="text/javascript" language="javascript">
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "list";     //列表页面
+
+        //开始配置【字段】信息
+        //var commandInfo3;
+
+        var pagerList = {};
+
+        //保存视图已经添加过得字段
+        var pageViewColList = {
+            pvId: {
+                colId: ""
+            }
+        };
+
+        function jsReady() {
+
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+
+            //开始加载
+            pagerList = new Nature.Pager.DataList(window, dbid);
+
+            pagerList.ListLoad(function() {
+
+                var comInfo = pagerList.cmdInfo;
+                
+                //设置字段的分页控件
+                setColumnPager();
+
+                var para = pagerList.cmdInfo.urlPara;
+                getPageViewByModuleId(para.foreignIDs.replace(/"/g, "").split(',')[0]);
+
+                //if (window.confirm("aaa")) {
+                //    myListLoad2();
+                //}
+                //$("#divSearch").drag({ isDragTmpDiv: false });titleBar: "span_title",
+                //$("#divFloatSearch").drag({  isDragTmpDiv: false });
+                //{"itemType":"sql","width":"0","sql":"SELECT pidall AS id ,txt  FROM  V_FU_List_ModuleDropDownList ORDER BY DisOrder","isChange":"-1"}
+
+
+                $("#addKind1,#addKind2").click(function() {
+                    if (this.id == "addKind1") {
+                        $("#addKind1").attr("class", "current");
+                        $("#addKind2").attr("class", null);
+                    } else {
+                        $("#addKind2").attr("class", "current");
+                        $("#addKind1").attr("class", null);
+                    }
+                    $("#pv input:checkbox").prop("checked", false);
+                    $("#divColListShow input:checkbox").prop("checked", false);
+                    $("#divColListShow input:checkbox").attr("disabled", null);
+                });
+
+                $("#saveBut").click("click", function() {
+
+
+                    var viewCheck;
+                    var fontCheck;
+                    var viewID;
+                    var maxPaiXu = -1;
+                    var paixu;
+
+                    $("#pv input:checkbox:checked").each(function(m) {
+                        var index = this.id.replace("cb", "");
+                        for (var key in pageViewColList[index]) {
+                            paixu = pageViewColList[index][key];
+                            if (paixu > maxPaiXu) {
+                                maxPaiXu = paixu;
+                            }
+                        }
+                        $("#divColListShow input:checkbox:checked").each(function(n) {
+
+                            fontCheck = $(this);
+
+                            var colId = this.id.split('_')[2];
+
+                            var isLoad = false;
+                            if (typeof pageViewColList[index] == "undefined") {
+                                isLoad = true;
+                            } else {
+                                if (typeof pageViewColList[index][colId] == "undefined")
+                                    isLoad = true;
+                            }
+
+                            if (isLoad) {
+                                //if ($(fontCheck).attr("disabled") != "disabled") {
+
+                                var dataInfoForUpdate = {
+                                    c1010020: index,
+                                    c1010030: colId,
+                                    c1010230: maxPaiXu + (n + 1) * 10
+                                };
+                                sendData(dataInfoForUpdate, colId);
+                            }
+                        });
+                    });
+
+                    function sendData(data, colId, callback) {
+                        var tr = $("#tr" + colId);
+                        tr.find("#msg").append("提交中...");
+
+                        var loadM = new Nature.Data.Manager();
+
+                        var urlPara = {
+                            dbid: dbid,
+                            mdid: 130,
+                            mpvid: 13005,
+                            fpvid: 0,
+                            bid: 13001,
+                            id: -2,
+                            frid: -2 
+                            
+                        };
+                        
+                        loadM.ajaxSaveData({
+                            title: "添加实体类的属性",
+                            urlPara: urlPara,
+                            formData: data,
+                            success: function(msg) {
+                                //添加成功
+                                //alert(key + "添加成功");
+                                if (msg.err != "") {
+                                    _alert(msg.err);
+                                } else {
+                                    tr.find("#msg").append("成功!");
+                                }
+
+                            }
+                        });
+                    }
+                     
+                });
+                
+                $("#divColList").html("");
+                selectTable();
+            });
+
+        }
+
+        function selectDataChange() {
+            $("#divColList").html("");
+            selectTable();
+        }
+
+        //选择表，显示表里的字段
+        function selectTable() {
+            var table = $("#grid");
+
+            table.find("tr").each(function () {
+                var tr = $(this);
+                
+                tr.click(function () {
+                    var tableId = $(this).find("#td1002010");
+                    $("#divColList").html("");
+                    setColumnGrid(tableId.html());
+
+                    $("#pv input:checkbox").prop("checked", false);//
+
+                });
+            });
+        }
+
+        var colDataSource;
+        var colPager;
+        var colGrid;
+
+        function setColumnPager() {
+
+            //分页控件
+            var pagerEvent = pagerList.cmdInfo;
+            //{
+            pagerEvent.divID = ["divColPage"];
+            pagerEvent.control = [$("#divColPage")];
+                //加载状态开始
+            pagerEvent.spinStart = top.spinStart;
+                //加载状态结束
+            pagerEvent.spinStop = top.spinStop;
+            pagerEvent.onPagerTurn = function(newIndex, oldIndex) {
+                top.spinStart();
+            };
+            //};
+            colPager = new Nature.Controls.QuickPager(pagerEvent);
+            //分页完毕
+
+        }
+
+        function setColumnGrid(tableId) {
+
+            //创建表格（只有表头，没有数据）
+            var gridEvent = pagerList.cmdInfo;//{
+            gridEvent.control = $("#divColList");
+            gridEvent.btnControl = $("#divButton1");
+            gridEvent.urlPara.moduleID = 130;
+            gridEvent.urlPara.masterPageViewID = 13003;
+            gridEvent.callback = colGridCallback;   //回调函数
+            //};
+            colGrid = new Nature.Controls.Grid(gridEvent );
+            //表格创建完毕
+
+            colGrid.CreateTable();
+
+            //加载Grid之后的函数
+            //表格绘制完毕（只有标头没有数据），创建分页控件（加载分页模板）
+            function colGridCallback() {
+                top.spinStart();
+
+                //获取第一页的记录集（ajax获取数据）
+                loadPagerData(1);
+
+                function loadPagerData(pageIndex, query) {
+                    //数据信息
+                    var dataInfo = pagerList.cmdInfo;// {
+                    dataInfo.urlPara.moduleID = 130;
+                    dataInfo.urlPara.masterPageViewID = 13003;
+                    dataInfo.urlPara.foreignID = tableId;
+                    dataInfo.urlPara.foreignIDs = tableId;
+                    //};
+                    colDataSource = new Nature.Controls.DataSource(dataInfo );
+
+                    colDataSource.LoadData(pageIndex, query, function (dataSource) {
+
+                        //绑定表格（显示数据）
+                        colGrid.DataBind(dataSource, function () {
+                            if (typeof (top) != "undefined")
+                                top.spinStop();
+
+                            $("#divMain").fadeIn("normal", function () {
+                                top.spinStop();
+                            });
+
+                            $("#divColListShow").html($("#divColList").html());
+
+                            $("#divColListShow #grid tr").each(function () {
+                                var tr = $(this);
+                                tr.append('<td id="msg" style="width:150px"></td>');
+
+                            });
+                            
+                        });
+
+                    });
+                }
+            }
+        }
+
+        var fontJson;
+
+        function getPageViewByModuleId(moduleId) {
+            //没有缓存，加载
+            var myData = {
+                action: "listkey",
+                mdid: 130,
+                mpvid: 13006,
+                fpvid: 0,
+                hasKey: 0,
+                dbid: dbid,
+                frid: moduleId,
+                pageno: 1
+            };
+            var loadM = new Nature.Data.Manager();
+
+            loadM.ajaxGetData({
+                title: "数据源",
+                urlPara: myData, //
+                success: function (msg) {
+                    var pvIds = "";
+                    var pv = msg.data;
+
+                    var divPv = $("#pv");
+                    
+                    if (divPv.html().length <= 0) {
+
+
+                        for (var key in pv) {
+                            divPv.append("<br><input type=\"checkbox\" id=\"cb" + pv[key][1006010] + "\"/>id：" + pv[key][1006010] + "。视图名称：" + pv[key][1006040]);
+                            pvIds = pv[key][1006010];
+                            var foo = $("#cb" + pv[key][1006010] + "");
+                            var loadM2 = new Nature.Data.Manager();
+
+                            loadM2.ajaxGetData({
+                                urlPara: { action: "listkey", mdid: 130, mpvid: 13007, fpvid: 13008, id: -2, dbid: dbid, pageno: 1, c1010020: pvIds, hasKey: 1 },
+                                title: "根据视图ID获取视图选择的字段列表",
+                                success: function (json) {
+                                    var firstId = json.datakeys[0];
+                                    if (typeof firstId == "undefined") {
+                                        return;
+                                    }
+
+                                    var pvId = json.data[firstId]["1010020"];
+                                    if (typeof pageViewColList[pvId] == "undefined") {
+                                        pageViewColList[pvId] = {};
+                                    }
+
+                                    for (var key2 in json.data) {
+                                        var colId = json.data[key2]["1010030"];
+                                        pageViewColList[pvId][colId] = json.data[key2]["1010230"];
+                                    }
+
+                                }
+                            });
+
+                        }
+
+                        pvIds += "-1";
+                        //
+                        $("#pv input:checkbox").each(function () {
+                            $(this).bind("change", function () {
+                                if ($("#addKind2").attr("class") == "current" && this.checked == true) {
+                                    $("#pv input:checkbox").prop("checked", false);
+                                    $("#divColListShow input:checkbox").prop("checked", false);
+                                    this.checked = true;
+                                    var pvid = this.id.replace("cb", "");
+                                    $("#divColListShow input:checkbox").attr("disabled", null);
+                                    $("#divColListShow input:checkbox").each(function () {
+                                        var fontid = this.id.split("_")[2];
+                                        for (var o in pageViewColList[pvid]) {
+                                            if (pageViewColList[pvid][o] != "undefined" && o == fontid) {
+                                                this.checked = true;
+                                                this.disabled = "disabled";
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
+                    
+                }
+            });
+        }
+    </script>
+
+</head>
+<body>
+    <div id="divMain" style="width: 500px; float: left">
+        <div id="divButtondivSearch" style="display: none;">
+            <div id="divButton"></div>
+        </div>
+
+        <div id="divSearch" style="border: 0px bisque solid;">
+            <div>
+                <form id="dataForm1">
+                    <div id="divSearchDetail" style="float: left;">暂无</div>
+                    <div id="divSearchBtn" style="float: left;"></div>
+                </form>
+            </div>
+
+        </div>
+        <div style="clear: both;"></div>
+        <div id="divQuickPage5"></div>
+        <div id="divDataList"></div>
+        <div id="divQuickPage"></div>
+        <div id="divFloatSearch" class="layer_div_c" style="display: none;">
+            <span id="span_title" class="layer_title">查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+            <form id="dataForm2">
+                <div id="divFloatSearchDetail"></div>
+            </form>
+            <span class="layer_title layer_footer"><span id="btnFind"></span></span>
+        </div>
+
+        <div>
+            <input type="button" value="保存" id="saveBut" class="input_01" />
+        </div>
+    </div>
+
+    <div style="width: 600px; height: 700px; margin: 20px; float: left">
+        <div class="tabnav">
+            <h2>添加字段的方式：</h2>
+            <ul class="tabsmenu tabsmenu02">
+                <li id="addKind1" class="current">1 初始批量添加</li>
+                <li id="addKind2">2 后续追加</li>
+
+            </ul>
+        </div>
+        <div style="clear:both;"></div>
+        <div id="pv" class="tabnav"></div>
+        <div style="clear:both;height: 100px;"></div>
+        <div id="divColListShow"  class="tabnav"></div>
+        <div id="divColList" style="display: none"></div>
+        <div id="divColPage"></div>
+    </div>
+</body>
+</html>

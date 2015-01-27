@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>表单页面</title>
+    <script language="javascript" type="text/javascript" src="http://natureservice.517.cn/Scripts/jquery-1.8.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="http://natureservice.517.cn/Scripts/NatureAjax/jQuery.loadJs.js"></script>
+    
+ <style type="text/css">
+         
+ </style>
+
+    <script type="text/javascript" language="javascript">
+        $.loadCss("cssForm", "pager");
+
+        var dataID = -2;
+        var frid = -2;
+        var para;
+
+        var dbid;
+        
+        var control;
+        window.onload = function () {
+            $.loadFormJs(function () {
+                dbid = "1," + $.cookie("ServicesDataBaseID");
+                para = $.getUrlParameter();
+
+
+                Nature.Page.Form.Create(writeDebug, parent.showLoginDiv, dbid, function (formState) {
+                    switch (formState) {
+                        case 401:
+                            //查看
+                            $("#BtnSave").hide();
+                            $("#BtnSave2").hide();
+                            break;
+                        case 402:
+                            //添加
+                            $("#BtnSave").show();
+                            $("#BtnSave2").show();
+                            break;
+                        case 403:
+                        case 408:
+                            //修改
+                            $("#BtnSave").html("保存后关闭").show();
+                            $("#BtnSave2").hide();
+                            break;
+                      
+
+                    }
+                });
+            });
+        };
+
+        function myCheck() {
+
+            //创建传值的json
+            //        var jsonKey = "{";
+            //        for (var i = 0; i < colIds.length;i++ ) {
+            //            jsonKey += "c" + colIds[i] + ":{},";
+            //        }
+            //        jsonKey = jsonKey.substring(0, jsonKey.length - 1);
+            //        jsonKey += "}";
+            //        jsonKey = eval("(" + jsonKey + ")");
+
+            Nature.Page.Form.SavaData(function () {
+                //保存结
+                loadFirst();
+
+                myClear();
+
+                //关闭窗体
+                parent.formClose(para.bid);
+            });
+
+        }
+
+        function myCheck2() {
+            Nature.Page.Form.SavaData(function () {
+                //保存结束
+                myClear();
+                loadFirst();
+            });
+        }
+
+        function myClear() {
+            Nature.Page.Form.Clear();
+        }
+
+        function myClose() {
+            parent.formClose(para.bid);
+        }
+        
+        function loadFirst() {
+            var tmpEvent = parent.mainEvent.divEvent["btn" + para.ppvid];
+            tmpEvent.loadFirst();
+        }
+        
+        var wdDepth = 0;        //单独打开页面的话，递归无法退出，所以加上深度的判断。
+        function writeDebug(msg) {
+            wdDepth++;
+            if (wdDepth > 14)
+                return;
+
+            if (parent.DebugSet)
+                parent.DebugSet(msg);
+            else
+                parent.writeDebug(msg);
+        }
+
+    </script>   
+</head>
+<body>
+    <div id="divFormMain">
+        <form id="dataForm">
+            <div id="divForm">
+        
+            </div>
+        </form> 
+        <div style="text-align:center">
+            <input type="button" name="BtnSave" class="btn" value="保存后关闭" onclick="return myCheck();" id="BtnSave" class="btn" />
+            <input type="button" name="BtnSave" class="btn" value="保存后继续" onclick="return myCheck2();" id="BtnSave2" class="btn" />
+            <input type="button" name="BtnSave" class="btn" value=" 关　　闭 " onclick="myClose();" id="BtnClose" class="btn" />
+          
+        </div>
+    </div>
+   
+</body>
+</html>

@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+  <!--  <script src="sAddModule.js"></script>-->
+    <script type="text/javascript" language="javascript">
+        var para;
+        var dbid;
+        var control;
+        //
+        var pageKind = "form";     //表单页面
+          
+        function jsReady() {
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            myFormLoad();
+            //var sam = new sAddModule();
+            //sam.init(para.id, dbid);
+            //sam.addSelect(dbid);
+        }
+         
+        function myCheck() {
+            var re = checkData();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveClose);
+                } else {
+                    saveClose();
+                }
+            }
+        }
+
+        function myCheck2() {
+            var re = form.checkForm();
+            if (re == true) {
+                if (typeof saveBefore != "undefined") {
+                    saveBefore(saveContunie);
+                } else {
+                    saveContunie();
+                }
+            }
+        }
+
+        function checkData() {
+            //自带的验证功能。
+            var re = form.checkForm();
+
+            if (re == true) {
+                //验证通过，查看是否有自定义的js文件的验证
+                if (typeof (cuscheck) != "undefined") {
+                    //有自定义的验证，执行
+                    re = cuscheck();
+                }
+            }
+            return re;
+        }
+
+        function saveClose() {
+            form.savaData(function (state) {
+                //保存结
+                //alert(state);
+                //myClear();
+                formLoadThis();
+                //关闭窗体
+                parent.formClose(para.bid);
+            });
+        }
+
+        function saveContunie() {
+            form.savaData(function () {
+                //保存结束
+                myClear();
+                formLoadFirst();
+            });
+        }
+      
+    </script>
+
+</head>
+<body>
+   <div id="divFormMain" style="display:none1;">
+            <form id="dataForm">
+                <div id="divForm">
+                
+                </div>
+            </form> 
+       
+       <div id="div1" class="ui-box" style="width:400px;min-height: 220px;float:left;margin:10px;">
+           <div class="ui-box-head">
+               <h4 class="ui-box-head-title">快速添加实体类</h4>
+               <span class="ui-box-head-text"> </span>
+               <a href="#" class="ui-box-head-more"> </a>
+           </div>
+           <div class="ui-box-container">
+               <div id="divAddPageView" class="ui-box-content">
+                     
+               </div>
+           </div>
+       </div>
+       
+       <div id="div2" class="ui-box" style="width:400px;min-height: 220px;float:left;margin:10px">
+           <div class="ui-box-head">
+               <h4 class="ui-box-head-title">快速添加按钮</h4>
+               <span class="ui-box-head-text"> </span>
+               <a href="#" class="ui-box-head-more"> </a>
+           </div>
+           <div class="ui-box-container">
+               <div id="divAddButton" class="ui-box-content">
+                     
+               </div>
+           </div>
+       </div>
+       
+       <div style="clear:both"></div>
+       <div style="text-align:center"  name="butDiv">
+                <input type="button" name="BtnSave" class="input_01" value="保存后关闭" id="BtnSave"  onclick="return myCheck();"/>
+                <input type="button" name="BtnSave" class="input_01" value="保存后继续" id="BtnSave2" onclick="return myCheck2();"   />
+                <input type="button" name="BtnSave" class="input_01" value=" 关　　闭 " id="BtnClose" onclick="myClose();" />
+                <select disabled></select>
+            </div>
+        </div>
+</body>
+</html>

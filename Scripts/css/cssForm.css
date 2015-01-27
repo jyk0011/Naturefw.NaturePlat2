@@ -1,0 +1,121 @@
+body
+{
+	margin : 0px;
+	font-size:12pt;
+}
+div,body
+{background-color:#FFFFFF;
+}
+.css_Form
+{
+	padding:3px;
+	width:98%;
+	border:1px;
+	border-width:1px;
+	border-color:#5D7B9D;
+	border-collapse:collapse;
+	background-color:White;
+    margin: 5px;
+	
+	
+}
+
+.css_Search
+{
+	padding:3px;
+	width:100%;
+	border:0px;
+	border-width:0px;
+	border-color:#5D7B9D;
+	border-collapse:collapse;
+	background-color:White;
+	
+}
+
+
+table
+{
+	border:1px;
+	border-width:1px;
+	border-color:#5D7B9D;
+	border-collapse:collapse;
+}
+ 
+td   
+{
+	font-size: 10pt;
+	
+}
+
+.Text {  font-size: 12pt} 
+
+.cssTxt {  
+    font-size: 12pt; 
+    color: #003399; 
+    font-family: "宋体"; 
+    font-style: normal; 
+    background-color: #fefefe; 
+    border-color: #93BEE2 #93BEE2 #93BEE2 #93BEE2 ; 
+    border: 1px #93BEE2 solid; 
+}
+
+/*按钮样式*/
+.ButtonCss {
+    font-family: "Tahoma", "宋体";
+    font-size: 12pt; color: #003399;
+    border: 1px #003399 solid;
+    color:#006699;
+    BORDER-BOTTOM: #93bee2 1px solid; 
+    BORDER-LEFT: #93bee2 1px solid; 
+    BORDER-RIGHT: #93bee2 1px solid; 
+    BORDER-TOP: #93bee2 1px solid;
+    background-image:url(Img/bluebuttonbg.gif);
+    background-color: #e8f4ff;
+    CURSOR: hand;
+    font-style: normal ;
+}
+ .btn {
+            BORDER-RIGHT: #7b9ebd 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #7b9ebd 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 12pt; FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#cecfde); BORDER-LEFT: #7b9ebd 1px solid; CURSOR: hand; COLOR: black; PADDING-TOP: 2px; BORDER-BOTTOM: #7b9ebd 1px solid
+        }
+A
+{
+	font-size: 10pt;
+	color: #006699;
+	text-decoration: none;
+}
+A:ACTIVE {
+
+	color : #006699;	
+	text-decoration: none;
+}
+A:FOCUS
+{
+	color: black;
+	text-decoration: none;
+}
+A:HOVER
+{
+	color: #ff4500;
+	text-decoration: underline;
+}
+A:LINK {
+	
+	text-decoration: none;
+}
+ .btn {
+    border-left: #7b9ebd 1px solid; 
+    border-right: #7b9ebd 1px solid; 
+    border-top: #7b9ebd 1px solid;
+    border-bottom: #7b9ebd 1px solid;
+    padding-top: 2px;
+    padding-left: 2px; 
+    padding-right: 2px;
+    margin-right: 5px;
+    font-size: 14px; 
+    color: black; 
+    cursor: pointer;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #ffffff), color-stop(1, #cecfde));
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#cecfde);
+    _min-width: 50px;
+     
+}

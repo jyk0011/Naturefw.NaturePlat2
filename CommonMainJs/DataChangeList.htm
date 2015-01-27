@@ -1,0 +1,453 @@
+﻿<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据变化的历程</title>
+    <script type="text/javascript" src="/boot.js" pageKind="list"></script>
+    
+    <script type="text/javascript" language="javascript">
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "list";     //列表页面
+
+        var tableId = 1012;
+        //var aQuery = { c1036030: 1012, c1036040: -2007 };
+
+        var tableColumnInfo = {};
+        var tableColumnInfoIndex = [];
+
+        var opKind = {
+            11: "替换列表里的标识",
+            12: "翻页",
+            13: "获取指定项目的元数据",
+            14: "角色记录",
+            15: "全部记录，不分页",
+            16: "一条记录",
+            17: "获取用户信息",
+            18: "下一个分类的序号",
+            19: "获取服务器的年月日",
+            20: "获取服务器的年月日 时分",
+            21: "获取服务器的小时和分钟",
+            22: "获取上传图片的图片ID集合",
+            23: "删除指定的图片",
+            24: "没有这个action",
+            31: "打开表单添加",
+            32: "打开表单修改",
+            51: "添加数据",
+            52: "修改数据",
+            53: "物理删除",
+            54: "逻辑删除"
+        };
+
+        var opStateText = {
+            0: "未知",
+            1: "成功",
+            2: "失败",
+            3: "数据验证失败",
+            4: "保存时出现异常"
+        };
+        
+        function jsReady() {
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            myListLoad();
+            //$("#divSearch").drag({ isDragTmpDiv: false });titleBar: "span_title",
+            //$("#divFloatSearch").drag({  isDragTmpDiv: false });
+            //{"itemType":"sql","width":"0","sql":"SELECT pidall AS id ,txt  FROM  V_FU_List_ModuleDropDownList ORDER BY DisOrder","isChange":"-1"}
+
+        }
+
+        /*折腾完之后触发*/
+        function selectDataChange() {
+            //$("#divMain").hide();
+
+            /*获取表的字段的信息*/
+            $("#divMain").hide();
+
+            tableId = para.query.split(",")[0].split(":")[1];
+            
+            getTableCol(tableId, createLog);
+        }
+        
+        /*根据表ID获取字段名称*/
+        function getTableCol(tableId, callback) {
+            var load = new Nature.Data.Cache();
+
+            load.ajaxGetMeta({
+                data: { action: "tablecolumn", mdid: tableId, mpvid: -3, bid: -3, dbid: dbid, cacheKey: "tableID_" + tableId },
+                title: "表的字段信息",
+                success: function (info) {
+                    tableColumnInfo = {};
+                    
+                    for (var key in info.colMeta) {
+                        tableColumnInfo[key] = info.colMeta[key];
+                        tableColumnInfoIndex.push(key);
+                    }
+                    tableColumnInfoIndex.push("1000150");
+                    tableColumnInfoIndex.push("1000160");
+                    tableColumnInfoIndex.push("1000170");
+                    tableColumnInfoIndex.push("1000140");
+                    
+                    /*添加固定的四个字段*/
+                    tableColumnInfo["1000150"] = "添加人";
+                    tableColumnInfo["1000160"] = "添加时间";
+                    tableColumnInfo["1000170"] = "是否删除";
+                    tableColumnInfo["1000140"] = "排序";
+
+                    createTable();
+                    
+                    callback();
+
+                    unioTd();
+                }
+            });
+        }
+        
+        /*整理出来模块名称*/
+        function getModuleNameList() {
+            var treeMeta = top.__cache.treeMeta;
+
+            if (typeof treeMeta == "undefined")
+                return {};
+
+            var tmpTree = {};
+            for (var i = 0; i < treeMeta.length; i++) {
+                tmpTree[treeMeta[i].ModuleID] = treeMeta[i].ModuleName;
+            }
+
+            return tmpTree;
+        }
+        
+
+        /*建立可以选择的字段列表*/
+        function createTable() {
+
+            var table = $("#TableColumn");
+            var tr = $("<tr>");
+            var trTmp;
+            
+            for (var colIndex = 0; colIndex < tableColumnInfoIndex.length; colIndex++) {
+                var key = tableColumnInfoIndex[colIndex];
+
+                if (colIndex % 6 == 0) {
+                    trTmp = tr.clone();
+                    table.append(trTmp);
+                }
+                
+                var td = $("<td>");
+                var lable = $("<label >" );
+                var chk = $("<input id=\"chk_" + key + "\" type=\"checkbox\" checked>");
+
+                chk.attr("value", key);
+                chk.click(function() {
+                    var colId = this.value;
+                    if (this.checked) {
+                        $(".col_" + colId).fadeIn("fast");
+
+                    } else {
+                        $(".col_" + colId).fadeOut("fast");   /*{ width: '-=10' }, "slow"*/
+                         
+
+                    }
+                });
+                
+                td.append(lable);
+                lable.append(chk);
+                lable.append(tableColumnInfo[key]);
+
+                trTmp.append(td);
+
+            }
+            
+
+        }
+        
+        /*向下合并td，模块视图等，同样的模块等合并在一行*/
+        function unioTd() {
+            var dataChangeLog = $("#dataChangeLog");
+
+            var preTd;
+            var thisTd;
+
+            hebing(".mod");
+            hebing(".btn");
+
+            replaceKey();
+            
+            function hebing(className) {
+                dataChangeLog.find(className).each(function () {
+                    thisTd = $(this);
+                    if (typeof preTd == "undefined") {
+                        preTd = thisTd;
+                    } else {
+                        if (preTd.html() == thisTd.html()) {
+                            thisTd.hide();
+                            preTd.attr("rowspan", preTd.attr("rowspan") * 1 + 3);
+                        }
+                        else
+                            preTd = thisTd;
+                    }
+                });
+            }
+
+            /*替换id*/
+            function replaceKey() {
+                var load = new Nature.Data.Cache();
+
+                load.ajaxGetMeta({
+                    data: { action: "datachange", mdid: 0, mpvid: -3, bid: -3, dbid: dbid, cacheKey: "metaForLog_" + dbid },
+                    title: "模块、视图、按钮等的名称",
+                    success: function (info) {
+
+                        var module = info.Module;
+                        var view = info.PageView;
+                        var button = info.Button;
+                         
+                        repMod();
+                        repBtn();
+
+                        function repMod() {
+                            dataChangeLog.find(".mod").each(function () {
+                                var ids = this.innerHTML.split("_");
+                                var modInfo = module[ids[0]];
+
+                                var modName = "";//modInfo.ModuleName;
+                                
+                                var modIdAlls = modInfo.ParentIDAll.split(",");
+                                for (var i = 1; i < modIdAlls.length; i++) {
+                                    modName += module[modIdAlls[i]].ModuleName + "<br/>";
+                                    
+                                    for (var j = 0; j < i; j++) {
+                                        if (j == 0) {
+                                            if (i == modIdAlls.length-1)
+                                                modName += "└"; //└
+                                            else
+                                                modName += "├"; //
+                                        } else
+                                            modName += "─";
+                                    }
+                                }
+                                
+
+                                modName += modInfo.ModuleName;
+                                
+                                this.innerHTML = modName + "<br/><br/>" + view[ids[1]].PVTitle;
+                                
+                            });
+                        }
+                        
+                        function repBtn() {
+                            dataChangeLog.find(".btn").each(function () {
+                                var ids = this.innerHTML.split("_");
+                                var btnTitle = button[ids[0]].BtnTitle.split("_")[0];
+                                
+                                this.innerHTML = btnTitle + "<br/>" + ids[1];
+
+                            });
+                        }
+
+                    }
+                });
+            }
+             
+        }
+
+        /*创建整个表格*/
+        function createLog() {
+
+            var data = grid.gridEvent.dataSet.data;
+            
+            //var meta = grid.gridEvent.gridMeta.data;
+
+            var dataChangeLog = $("#dataChangeLog");
+             
+            var colIndex = 0;
+            
+            /*设置字段名称*/
+            var trCol = $("#trCol");
+            for (colIndex = 0; colIndex < tableColumnInfoIndex.length; colIndex++) {
+                var key = tableColumnInfoIndex[colIndex];
+                trCol.append("<th class=\"col_" + key + "\" style=\"text-align: center;\"><span>" + tableColumnInfo[key] + "</span></th>");
+                
+                var spanX = $("<span class=\"arrup\" value=\"" + key + "\" style=\"background: #ccc;border-radius: 10px;cursor:pointer; float: right; -webkit-box-shadow: 0px 0px 5px #000; padding-top: -10px;\" >Ｘ</span>");
+
+                trCol.find("th").last().append(spanX);
+                
+                spanX.click(function () {
+                    var colId = $(this).attr("value");
+                    $(".col_" + colId).fadeOut("fast");
+                    $("#chk_" + colId)[0].checked = false;
+
+                });
+            }
+          
+            
+            /*记录上一次新值*/
+            var preNewValueJson ;
+            /*记录本次一次旧值*/
+            var thisOldValueJson;
+
+            var treeMeta = getModuleNameList();
+            
+            /*遍历*/
+            for (var i = 0; i < data.length; i++) {
+                /*添加模块等信息*/
+                var module = data[i]["1034020"];
+                var pageview = data[i]["1034030"];
+                var anniu = data[i]["1034040"];
+                var modKind = opKind[data[i]["1034050"]];
+                var opState = opStateText[data[i]["1034060"]];
+                var opPerson = data[i]["1000150"];
+                var opTime = data[i]["1000160"];
+                var opIP = data[i]["1036080"];
+
+                var newTr = $("<tr>").appendTo(dataChangeLog);
+
+                newTr.append("<td class=\"mod\" style=\"text-align:left;\" rowspan=\"3\">" + module + "_" + pageview + "</td>");
+                newTr.append("<td class=\"btn\" style=\"text-align:left;\" rowspan=\"3\">" + anniu + "_" + modKind + "</td>");
+                newTr.append("<td class=\"\" style=\"text-align:center;\" rowspan=\"3\">" + opState + "</td>");
+                newTr.append("<td class=\"\" style=\"text-align:left;\" rowspan=\"3\">" + opPerson + "<br/> (" + opIP + ")<br/> " + opTime.replace(" ","<br/>") + "</td>");
+
+               
+                /*添加原值*/
+                var value = data[i]["1036050"];
+                
+                var valueJosn = {};
+               
+                if (value != "")
+                    valueJosn = eval("(" + value + ")");
+
+                /*记录本次原值*/
+                thisOldValueJson = valueJosn;
+                
+                newTr.append("<td style=\"text-align:center;\" rowspan=\"1\">原值</td>");
+
+                for (colIndex = 0; colIndex < tableColumnInfoIndex.length; colIndex++) {
+                    key = tableColumnInfoIndex[colIndex];
+                    if (typeof valueJosn[key] != "undefined") {
+                        if (typeof preNewValueJson  != "undefined") {
+                            /*和上一条的新值对比，看看变没*/
+                            if (preNewValueJson[key] == valueJosn[key]) {
+                                newTr.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">" + valueJosn[key] + "</td>");
+                            } else {
+                                newTr.append("<td class=\"col_" + key + "\" style=\"text-align: left;background:#FF9918\">" + valueJosn[key] + "</td>");
+                            }
+                        }
+                        else
+                            newTr.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">" + valueJosn[key] + "</td>");
+                        
+                    } else {
+                        newTr.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">&nbsp;</td>");
+                    }
+                }
+                /*添加原值完毕*/
+
+                /*添加提交*/
+
+                var newTr3 = $("<tr>").appendTo(dataChangeLog);
+                newTr3.append("<td style=\"text-align:center;\" rowspan=\"1\">提交值</td>");
+
+                value = data[i]["1036070"];
+                if (value != "")
+                    valueJosn = eval("(" + value + ")");
+                else
+                    valueJosn = {};
+
+                for (colIndex = 0; colIndex < tableColumnInfoIndex.length; colIndex++) {
+                    key = tableColumnInfoIndex[colIndex];
+                    if (typeof valueJosn[key] != "undefined")
+                        newTr3.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">" + valueJosn[key] + "</td>");
+                    else {
+                        newTr3.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">&nbsp;</td>");
+                    }
+                }
+                /*添加提交完毕*/
+
+
+                /*添加新值*/
+                var newTr2 = $("<tr>").appendTo(dataChangeLog);
+
+                newTr2.append("<td style=\"text-align:center;\" rowspan=\"1\">新值</td>");
+                
+                value = data[i]["1036060"];
+                if (value != "")
+                    valueJosn = eval("(" + value + ")");
+                else  
+                    valueJosn = {};
+
+                /*记录上次新值*/
+                preNewValueJson = valueJosn;
+                
+                for (colIndex = 0; colIndex < tableColumnInfoIndex.length; colIndex++) {
+                    key = tableColumnInfoIndex[colIndex];
+                    if (typeof valueJosn[key] != "undefined") {
+                        /*和本条的原值对比，看看变没*/
+                        if (thisOldValueJson[key] == valueJosn[key]) {
+                            newTr2.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">" + valueJosn[key] + "</td>");
+                        } else {
+                            newTr2.append("<td class=\"col_" + key + "\" style=\"text-align: left;background:#FF99ff\">" + valueJosn[key] + "</td>");
+                        }
+                    } else {
+                        newTr2.append("<td class=\"col_" + key + "\" style=\"text-align: left;\">&nbsp;</td>");
+                    }
+                }
+                /*添加新值完毕*/
+                
+            }
+
+        }
+
+
+       
+        
+        var changeLog = function() {
+
+        };
+
+    </script>
+
+    </head>
+    <body>
+        <table id="TableColumn" rules="all" class="table_default1" style="width: 1460px"  >
+        </table>
+
+        <table id="dataChangeLog" rules="all" class="table_default1" style="width: 1460px"  >
+             
+            <tr class="first" height="19" style="">
+                <th class="" style="text-align:center;" rowspan="2" width="104">模块/视图</th>
+                <th class="" style="text-align: center;" rowspan="2"  width="70">按钮/类型</th>
+                <th class="" style="text-align: center;" rowspan="2"  width="30">状态</th>
+                <th class="" style="text-align: center;" rowspan="2"  width="85">操作人/IP</th>
+                <th class="" style="text-align: center;" rowspan="2"  width="40">类型</th>
+                <th class="" style="text-align: center;" colspan="100" >[表]的id为111 的变化历程</th>
+            </tr>
+            <tr class="first" id="trCol" height="19" style="">
+                
+            </tr>
+            
+        </table>
+
+        <div id="divMain" style="display:none;">
+            <div id="divButtondivSearch">
+                <div id="divButton"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divSearch" style="border:0px bisque solid;" >
+                <div >
+                    <form id="dataForm1"><div id="divSearchDetail" style="float:left;">暂无</div><div id="divSearchBtn" style="float:left;"></div></form>
+                </div>
+                 
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divQuickPage"></div>
+            <div id="divDataList"></div>
+            <div id="divQuickPage1"></div>
+            <div id="divFloatSearch" class="layer_div_c" style="display:none;">
+                <span id="span_title" class="layer_title" >查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+                <form id="dataForm2"><div id="divFloatSearchDetail"></div></form>
+                <span class="layer_title layer_footer"><span id="btnFind"></span> </span>
+            </div>
+        </div>
+    </body>
+</html>

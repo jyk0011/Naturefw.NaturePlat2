@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>数据列表页面de压力测试</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+    
+    <script type="text/javascript" language="javascript">
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "list";     //列表页面
+
+        function jsReady() {
+            //开始加载
+            dbid = "1," + $.cookie("ServicesDataBaseID");
+            myListLoad();
+            //$("#divSearch").drag({ isDragTmpDiv: false });titleBar: "span_title",
+            //$("#divFloatSearch").drag({  isDragTmpDiv: false });
+            //{"itemType":"sql","width":"0","sql":"SELECT pidall AS id ,txt  FROM  V_FU_List_ModuleDropDownList ORDER BY DisOrder","isChange":"-1"}
+            
+        }
+
+
+    </script>
+
+    </head>
+    <body>
+        <div id="divMain" style="display:none;">
+            <div id="divButtondivSearch">
+                <div id="divButton"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divSearch" style="border:0px bisque solid;" >
+                <div >
+                    <form id="dataForm1"><div id="divSearchDetail" style="float:left;">暂无</div><div id="divSearchBtn" style="float:left;"></div></form>
+                </div>
+                 
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divQuickPage"></div>
+            <div id="divDataList"></div>
+            <div id="divQuickPage1"></div>
+            <div id="divFloatSearch" class="layer_div_c" style="display:none;">
+                <span id="span_title" class="layer_title" >查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+                <form id="dataForm2"><div id="divFloatSearchDetail"></div></form>
+                <span class="layer_title layer_footer"><span id="btnFind"></span> </span>
+            </div>
+        </div>
+    </body>
+</html>

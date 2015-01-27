@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>自动生成文档</title>
+    <script   type="text/javascript" src="/boot.js"></script>
+    <style>
+        div {
+            padding : 5px;
+        }
+    </style>
+    <script type="text/javascript" >
+
+        var dbid;
+        var fwdbid = "1";
+
+        var pageKind = "form";     //列表页面
+
+        var para;
+
+        var edit;
+        
+        function jsReady() {
+            //开始加载
+            dbid = $.cookie("ServicesDataBaseID");
+            
+            para = $.getUrlParameter(document);
+
+            
+            loadscript.js("/Scripts/customer/DocAjax.js" + Nature.jsVer, function () {
+                loadscript.js("/Scripts/customer/DocCreate.js" + Nature.jsVer, function () {
+
+                });
+            });
+        }
+        
+        /*设置在线编辑器*/
+        //function setEditor() {
+        //    edit = KindEditor.create('#doc', {
+        //        width: '900px',
+        //        height: '400px',
+        //        items: ['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'cut', 'copy', 'paste',
+        //            'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        //            'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+        //            'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+        //            'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+        //            'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|',
+        //            'table', 'hr', 'emoticons', 'anchor', 'link', 'unlink', '|', 'about'],
+        //        filterMode: true
+        //    });
+        //}
+
+    </script>
+</head>
+<body>
+    <div id="doc"></div>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>选择记录</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+   
+    <script type="text/javascript" language="javascript">
+      
+        var dbid = "2,13";
+        var fwdbid = dbid;
+        var para;
+
+        var pageKind = "list";     //列表页面
+
+        function jsReady() {
+            //开始加载
+            myListLoad();
+            //$("#divSearch").drag({ isDragTmpDiv: false });
+
+        }
+        
+        function selectDataChange() {
+            $("#divDataList #grid tr").each(function() {
+                $(this).click(function () {
+                    var tr = $(this);
+
+                    var tds = tr.find("td");
+                    var value = tds.eq(1).html();
+                    var txt = tds.eq(2).html();
+                    var info = {};      /*同一行的td的数据集合*/
+
+                    var index = 0;
+                    tds.each(function() {
+                        if (this.id != "tdCheck") {
+                            var colId = this.id.replace("td", "");
+                            switch (index) {
+                                case 0:
+                                    value = this.innerText;
+                                    break;
+                                case 1:
+                                    txt = this.innerText;
+                                    break;
+                            }
+
+                            info[colId] = this.innerText;
+                             
+                            index++;
+                        }
+                    });
+
+                    top.__cache[para.ppvid + "_" + para.ids].setValue(para.ids, value, txt, info);
+                    
+                    parent.formClose(para.bid);
+                });
+
+            });
+        }
+        </script>
+
+    </head>
+    <body>
+        <div id="divMain" style="display:none;">
+            <div id="divButtondivSearch">
+                <div id="divButton"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divSearch" style="border:1px #ddd solid;" >
+                <div >
+                    <form id="dataForm1"><div id="divSearchDetail" style="float:left;">请单击上面的“查询”按钮</div><div id="divSearchBtn" style="float:left;"></div></form>
+                </div>
+                
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divQuickPage"></div>
+            <div id="divDataList"></div>
+            <div id="divQuickPage1"></div>
+            <div id="divFloatSearch" class="layer_div_c" style="display:none;">
+                <span id="span_title" class="layer_title" >查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+                <form id="dataForm2"><div id="divFloatSearchDetail"></div></form>
+                <span class="layer_title layer_footer"><span id="btnFind"></span> </span>
+            </div>
+        </div>
+    </body>
+</html>

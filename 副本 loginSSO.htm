@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>登录sso的页面</title>
+    <meta  http-equiv="pragma"   content="no-cache"/>   
+    <meta  http-equiv="expires"  content="0"/>   
+    <meta  http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>   
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+    
+    <script type="text/javascript">
+        var isShowLoginDiv = false;
+
+        var sso;
+        var pageKind = "login";     //首页
+        
+        function jsReady() {
+            sso = new Nature.SSO(showLoginDiv1,window);
+            if (window.location.search.length == 0) {
+                //第一次访问，没有提交过表单
+                sso.loginStart(function(state) {
+                    if (state == "0") {
+                        //登录成功！
+                        if (typeof(parent) != "undefined") {
+                            if (typeof(parent.divLoginBghide) != "undefined") {
+                                parent.divLoginBghide();
+                            }
+                        }
+                        $("#divLogoutSSO").show();
+                    } else {
+                        showLoginDiv1();
+                    }
+                });
+            } else {
+                //提交过表单，返回url里的参数参数
+                sso.formReturn(function(state) {
+                    if (state == "0") {
+                        //登录成功！
+                        if (typeof(parent) != "undefined") {
+                            if (typeof(parent.start) != "undefined") {
+                                parent.start();
+                            }
+                        }
+                        $("#divLogoutSSO").show();
+                    } else {
+                        showLoginDiv1();
+                    }
+
+                });
+            }
+
+        }
+
+
+        //显示登录的表单，修改提交的url和webappID
+        function showLoginDiv1() {
+            isShowLoginDiv = true;
+            $("#divLoginSSO").show();
+            //修改表单的提交网址
+            $("form").attr("action", sso.SSOInfo.ssoURL + "/SSOAuth/SSOAuth.ashx?action=Login&url=http://" + location.host + location.pathname);
+            $("#hdnWebappID").val(sso.SSOInfo.appID);
+            $("#yzm").attr("src", sso.SSOInfo.ssoURL + "/SSOAuth/ValidateImage.ashx");
+        }
+        
+        //退出登录
+        function logout() {
+            sso.logoutSSO();
+        }
+        
+        function reloadyzm(yzm) {
+            yzm.src = sso.SSOInfo.ssoURL + "/SSOAuth/ValidateImage.ashx";
+        }
+    </script>
+
+</head>
+    <body>
+        
+        <div id="divLogoutSSO" style="display:none;">
+            <input id="btnLogout" type="button" value="退出登录" onclick="logout()" />
+        </div>
+    
+        <div id="divLoginSSO" style="display:none;">
+            <form name="form1" action="http://{0}/SSOAuth/SSOAuth.ashx?action=Login" method="POST">
+                <div >登录名称：<input id="txtUserCode" name="userCode" type="text" class="cssTxt input_t1" /></div>
+                <div >登录密码：<input id="txtUserPsw"  name="userPsw" type="password" class="cssTxt input_t1"  /></div>
+                <div >验证码：<input id="txtyzm"  name="yzm" type="text" class="cssTxt input_t1" /> <img id="yzm" src="" width="80px" onclick="reloadyzm(this)"/></div>
+                <div id="div_logo1"><table ><tr><td style="width:80px">选择项目：</td><td><iframe src="/SupportingPlatform/ProjectList.aspx"  allowtransparency="true" style="height: 25px;width:220px" scrolling="no" frameborder="0"  ></iframe></td></tr></table> </div>
+                <div ><input id="Submit1" type="submit" value=" 登 录 " class="input_01" /></div>
+                <div ><input id="hdnWebappID"  name="webappID" type="hidden" value="a" /></div>
+            </form>
+        </div>
+
+        <div id="divMsg"></div>
+
+    </body>
+</html>
