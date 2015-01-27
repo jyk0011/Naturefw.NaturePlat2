@@ -64,7 +64,7 @@ function cusJsLoad(formEvent) {
     /*获取类型*/
     var kind = viewKind.val();
     
-    if (typeof formEvent.window.parent.setList == "function")
+    if (typeof formEvent.win.parent.setList == "function")
         formEvent.window.parent.setList(kind);
 
 }

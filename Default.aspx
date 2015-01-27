@@ -10,7 +10,7 @@
         window.onload = function() {
             //var formData = new FormData();
 
-            //window.location = "/CommonMainJs";
+            window.location = "/CommonMainJs";
 
             document.getElementById("TextBox1").focus();
         };

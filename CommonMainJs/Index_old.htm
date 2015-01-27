@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>自然框架支撑平台</title>
+    <script language="javascript" type="text/javascript" src="/boot.js"></script>
+     
+    <script language="javascript" type="text/javascript">
+        var dataBaseId = 1;
+        var projectId = 1;
+        var sso;
+
+        var pageKind = "index";     //首页
+        
+        function jsReady() {
+            Nature.Page.Tree.showDivId = "110";
+            sso = new Nature.SSO(showLoginDiv,window);
+            mySpin();
+            $("#div_Debug").hide();
+            sso.loginStart(function (state) {
+                if (state == "0") {
+                    //登录成功！
+                    start();
+
+                    $("#divLoginBg").hide();
+                    $("#divLogin").hide();
+
+                } else {
+                    //出现异常：账号暂停，或者账号被锁定不能访问，或者app和sso沟通出现异常
+                    //alert(state);
+                }
+            });
+
+        }
+
+        window.setTimeout(function() {
+            var urlParam = $.getUrlParameter(document);
+            var openSetPv = urlParam.setpvid;
+            var openSetMod = urlParam.setmodid;
+            var openSetBtn = urlParam.setbtnid;
+            var openSetPager = urlParam.setpageid;
+            var openSetSonPv = urlParam.setsonid;
+            var info;
+            
+            //http://nature.com/CommonMainJs/DataList.htm          ?v=2.271&mdid=132&ppvid=12606&mpvid=13201&fpvid=13202&bid=12805&id=34001&frid=%2234001%22&frids=%22340,34001%22&ids=&1=1
+            //http://nature.com/SupportingPlatform/meta/ModView.htm?v=2.271&mdid=128&ppvid=12606&mpvid=12803&fpvid=0&bid=12802&id=-20404&frid="-20404"&frids="-204,-20404"&ids=&1=1
+            if (typeof openSetPv != "undefined") {
+                info = {
+                    ButtonID: "12802",
+                    BtnTitle: "配置实体类",
+                    WebWidth: "1800",
+                    WebHeight: "850",
+                    URL: "http://nature.com/SupportingPlatform/meta/ModView.htm",
+                    OpenModuleID: "128",
+                    parentPVid: "12606",
+                    OpenPageViewID: "12803",
+                    FindPageViewID: "13202"
+
+                };
+                IndexOpenWeb(info, openSetPv, openSetPv, openSetMod + ',' + openSetPv, "");
+            }
+            
+            if (typeof openSetSonPv != "undefined") {
+                info = {
+                    ButtonID: "12802s",
+                    BtnTitle: "配置批量修改的表单",
+                    WebWidth: "1800",
+                    WebHeight: "850",
+                    URL: "http://nature.com/SupportingPlatform/meta/ModView.htm",
+                    OpenModuleID: "128",
+                    parentPVid: "12606s",
+                    OpenPageViewID: "12803",
+                    FindPageViewID: "13202"
+
+                };
+                IndexOpenWeb(info, openSetSonPv, openSetSonPv, openSetMod + ',' + openSetSonPv, "");
+            }
+            
+            //http://nature.com/CommonMainJs/DataListForm.htm?v=2.271&mdid=127&ppvid=126&mpvid=12701&fpvid=12702&bid=12605&id=-201&frid=%22-201%22&frids=%22-201%22&ids=-201&1=1&upvid=12706
+            if (typeof openSetBtn != "undefined") {
+                info = {
+                    ButtonID: "12605",
+                    BtnTitle: "配置按钮",
+                    WebWidth: "1800",
+                    WebHeight: "850",
+                    URL: "http://nature.com/CommonMainJs/DataListForm.htm",
+                    OpenModuleID: "127",
+                    parentPVid: "126",
+                    OpenPageViewID: "12701",
+                    FindPageViewID: "12702"
+
+                };
+                IndexOpenWeb(info, openSetBtn, openSetBtn, openSetBtn, "");
+            }
+            
+            //view-source:http://nature.com/CommonMainJs/DataForm.htm?v=2.271&mdid=128&ppvid=12606&mpvid=12804&fpvid=0&bid=12804&id=-20001&frid=%22-20001%22&frids=%22-200,-20001%22&ids=&1=1
+            if (typeof openSetPager != "undefined") {
+                info = {
+                    ButtonID: "12804",
+                    BtnTitle: "配置分页信息",
+                    WebWidth: "600",
+                    WebHeight: "550",
+                    URL: "http://nature.com/CommonMainJs/DataForm.htm",
+                    OpenModuleID: "128",
+                    parentPVid: "12606",
+                    OpenPageViewID: "12804",
+                    FindPageViewID: "0"
+
+                };
+                IndexOpenWeb(info, openSetPager, openSetPager, openSetMod + ',' + openSetPager, "");
+            }
+
+        },10000);
+         
+</script>
+</head>
+    <body style="margin:0px;overflow:hidden;">
+        <div id="foo"></div> 
+        <div id="div_Show" class="clearfix">
+            <div id="div_logo">自然框架支撑平台 当前管理的项目：<iframe src="../SupportingPlatform/ProjectList.aspx"  allowtransparency="true" style="height: 25px;" scrolling="no" frameborder="0"  ></iframe> <span id="showMe"></span> <span onclick="logout()">安全退出</span></div>
+            <div id="div_Tree" style="width:200px;">
+                <div id="divDaoHang">导航菜单</div>
+            </div>
+            <div id="div_Main"  class="inner">
+                <ul id="ulTab" class="tabs left">
+                    <li id="tab0"  class="first current"><a onclick="Nature.Page.Tab.tabClick(0)" href="javascript:void(0)">我的桌面</a></li>
+                </ul>
+                <div id="divIframe">
+                    <div id="divf0" class="tagContent selectTag" >欢迎使用！
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="div_Debug" class="layer_div_c"> 
+            <span id="span_debugTitle" style="width:98%; float:left;" class="layer_title">这里是调试信息：
+                <a href="javascript:void(0)" id="close_layer_div_c">X</a>
+            </span>
+        
+        </div>
+        <div id="div_Cache" class="layer_div_c"> 
+            <span id="span_cacheTitle" style="width:90%; float:left;" class="layer_title">这里是各种缓存：
+                <a href="javascript:void(0)" id="A1">X</a>
+            </span>
+            
+        </div>
+        <div id="div_Mod" class="layer_div_c" style="display:none;">
+            <span id="span_title" class="layer_title">{title} <a href="javascript:void(0)" id="A2">X</a></span>
+            <p><iframe id="ifrm_Mod" class="cssIfrmMod" src="" frameborder="0" scrolling="auto"></iframe></p>
+           
+            
+        </div>
+        <div id="div_pwd" class="layer_title" style="display:none;">
+            <span id="spanPwd" style="width:95%; float:left;">修改密码 <a href="javascript:void(0)" id="A3">X</a></span> 
+             <div style="clear:both;"><iframe id="ifrm_Mod_pwd" class="cssIfrmMod" src="" frameborder="0"></iframe> </div>
+        </div>
+        <div id="div_Copyright"><span id="divDegub" onclick="DebugShow()">debug</span> <span id="divDegub" onclick="DebugCache()">cache</span> <span id="divDegub" onclick="DebugShow()">event</span> by 自然框架之UI ajax(jQuery) + Json + ashx  </div>
+    </body>
+</html>

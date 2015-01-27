@@ -27,10 +27,10 @@ Nature.WebConfig = {
 
 /*ajax的设置*/
 Nature.AjaxConfig = {
-    Urlsso:         "http://LCNatureSSO.nature.com",    /*单点登录的网址*/
-    UrlResource:    "http://LCNatureService.nature.com",  /*增删改查服务的网址*/
-    Urljs:          "http://LCNatureResource.nature.com",  /*js文件的网址*/
-    Urlcss:         "http://LCNatureResource.nature.com",          /*css文件的网址*/
+    Urlsso:         "",    /*单点登录的网址*/
+    UrlResource:    "",  /*增删改查服务的网址*/
+    Urljs:          "http://lelian.nature.com",  /*js文件的网址*/
+    Urlcss:         "http://lelian.nature.com",  /*css文件的网址*/
     
     ajaxDataType: "json"                            /*跨域的时候用jsonp，不用跨域的话用json，cors跨域的话也是json*/
 };
@@ -45,11 +45,11 @@ Nature.AjaxConfig.UrlAdapter = Nature.AjaxConfig.Urljs + "/Scripts/NatureAjax/Na
 
 Nature.Top.LoadCss = function(loadCss) {
     var cssUrl = Nature.AjaxConfig.Urlcss;
-    loadCss.css(cssUrl + '/websiteStyle/mangoGlobal.css');
-    loadCss.css(cssUrl + '/websiteStyle/mis-style-p.css');
-    loadCss.css(cssUrl + '/websiteStyle/MisStyle_v2.css');
-    loadCss.css(cssUrl + '/websiteStyle/debugCss.css');
-    loadCss.css(Nature.AjaxConfig.UrlResource + '/Scripts/css/css2.css');
+    loadCss.css(cssUrl + '/LeLianManage/css/mangoGlobal.css');
+    loadCss.css(cssUrl + '/LeLianManage/css/mis-style-p.css');
+    loadCss.css(cssUrl + '/LeLianManage/css/MisStyle_v2.css');
+    loadCss.css(cssUrl + '/LeLianManage/css/debugCss.css');
+    loadCss.css(cssUrl + '/LeLianManage/css/css2.css');
 };
 
 //外壳页的加载

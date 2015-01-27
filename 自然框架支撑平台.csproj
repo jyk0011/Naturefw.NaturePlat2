@@ -24,10 +24,14 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -109,14 +113,13 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="a.htm" />
-    <Content Include="ajaxTimeout.aspx" />
     <Content Include="App_Data\Meta.mdb" />
     <Content Include="boot.js" />
     <Content Include="bootLoad.js" />
     <Content Include="CommonMainJs\DataChangeList.htm" />
     <Content Include="CommonMainJs\DataForm.htm" />
     <Content Include="CommonMainJs\DataList.htm" />
+    <Content Include="LeLianManage\Logins\Login.aspx" />
     <Content Include="CommonMainJs\ModViewColum.htm" />
     <Content Include="CommonMainJs\repost.htm" />
     <Content Include="CommonMainJs\SelectData.htm" />
@@ -126,7 +129,6 @@
     <Content Include="CommonMainJs\ST_DataList.htm" />
     <Content Include="CommonModule\Role\DataForm.htm" />
     <Content Include="CommonModule\Role\DataList.htm" />
-    <Content Include="divform.htm" />
     <Content Include="PasswordUpdate.htm" />
     <Content Include="CommonMainJs\Index.htm" />
     <Content Include="CommonModule\Role\RoleAddUser.aspx" />
@@ -170,9 +172,6 @@
     <Content Include="SupportingPlatform\Role\FilterList.aspx" />
     <Content Include="SupportingPlatform\Role\FilterPageView.aspx" />
     <Content Include="SupportingPlatform\Tree.aspx" />
-    <Content Include="test\fset.htm" />
-    <Content Include="test\testajax.html" />
-    <Content Include="test\testCache.htm" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -182,15 +181,14 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="副本 loginSSO.htm" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ajaxTimeout.aspx.cs">
-      <DependentUpon>ajaxTimeout.aspx</DependentUpon>
+    <Compile Include="LeLianManage\Logins\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ajaxTimeout.aspx.designer.cs">
-      <DependentUpon>ajaxTimeout.aspx</DependentUpon>
+    <Compile Include="LeLianManage\Logins\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
