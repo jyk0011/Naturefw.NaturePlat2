@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>数据列表页面</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <script language="javascript" type="text/javascript" src="/boot.js"></script>
+        <script type="text/javascript" language="javascript">
+            var dbid = top.Nature.WebConfig.meta;
+            var fwdbid = dbid;
+            var para;
+
+            var pageKind = "list";     //列表页面
+            var pagerList = {};
+
+            //document.domian = "nature.com";
+            
+            function jsReady() {
+                if (Nature.WebConfig.isShowPeiZhi) {
+                    $("#spanList,#spanBtn,#spanPv,#spanPage").show();
+                }
+                //开始加载
+                pagerList = new Nature.Pager.DataList(window, dbid);
+
+                pagerList.ListLoad();
+               
+
+            }
+            
+            function setPageView(isList) {
+                //nature.com/CommonMainJs/DataList.htm?v=2.271&mdid=132&ppvid=12606&mpvid=13201&fpvid=13202&bid=12805&id=34301&frid="34301"&frids="343,34301"&ids=&1=1
+                //var info = {
+                //    ButtonID: "12805s",
+                //    BtnTitle: "配置列表",
+                //    WebWidth: "1400",
+                //    WebHeight: "700",
+                //    URL: "http://nature.com/CommonMainJs/?setpvid=" + para.mpvid,
+                //    OpenModuleID: "132",
+                //    parentPVid: "12606",
+                //    OpenPageViewID: "13201",
+                //    FindPageViewID: "13202"
+                    
+                //};
+                //top.IndexOpenWeb(info, para.mpvid, "-2", "-2", "");
+
+                var url ;
+                if (isList)
+                    url = "http://nature.com/CommonMainJs/?setpvid=" + para.mpvid + "&setmodid=" + para.mdid;
+                else
+                    url = "http://nature.com/CommonMainJs/?setpvid=" + para.fpvid + "&setmodid=" + para.mdid;
+                
+                window.open(url);
+                
+            }
+            
+            function setButton() {
+                var url = "http://nature.com/CommonMainJs/?setbtnid=" + para.mdid + "&setmodid=" + para.mdid;
+                window.open(url);
+            }
+            
+            function setPage() {
+                var url = "http://nature.com/CommonMainJs/?setpageid=" + para.mpvid + "&setmodid=" + para.mdid;
+                window.open(url);
+            }
+            
+        </script>
+
+    </head>
+    <body>
+        <div id="divMain" style="display:none;">
+            <div id="divButtondivSearch">
+                <div id="divButton"></div><span id="spanBtn" style="display: none;"  onclick="setButton()">配置</span>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="divSearch" style="border:1px #ddd solid;" >
+                <div >
+                    <form id="dataForm1"><div id="divSearchDetail" style="float:left;">请单击上面的“查询”按钮</div><div id="divSearchBtn" style="float:left;"></div></form>
+                </div>
+                <span id="spanPv" style="display: none;"  onclick="setPageView(false)">配置</span>
+            </div>
+            <div style="clear:both;"></div>
+            <div><div id="divQuickPage" style="width: 90%;float: left"></div><span id="spanPage" style="display: none;clear:both;"  onclick="setPage()" >配置</span></div>
+            <div style="clear:both;"></div>
+            <span id="spanList" style="display: none;"  onclick="setPageView(true)">配置</span>
+            <div id="divDataList"></div>
+            <div id="divQuickPage1"></div>
+            <div id="divFloatSearch" class="layer_div_c" style="display:none;">
+                <span id="span_title" class="layer_title" >查询条件 <a href="javascript:void(0)" onclick="$('#divFloatSearch').hide()" id="A2">X</a></span>
+                <form id="dataForm2"><div id="divFloatSearchDetail"></div></form>
+                <span class="layer_title layer_footer"><span id="btnFind"></span> </span>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Web;
-using Nature.Client.SSOApp;
+//using Nature.Client.SSOApp;
 using Nature.Common;
 
 namespace Nature.Service.Ashx

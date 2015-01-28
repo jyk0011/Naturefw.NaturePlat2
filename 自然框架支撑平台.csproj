@@ -51,56 +51,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Nature.BaseWebform, Version=2.5.0.18466, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.BaseWebform, Version=2.5.0.28711, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.BaseWebform.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.BaseWebform.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.Client.SSOWebApp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.Common, Version=2.5.0.25088, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Client.SSOWebApp.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.Common, Version=2.5.0.20583, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.DataAccessLibrary, Version=2.5.0.32504, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Common.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.DataAccessLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.DataAccessLibrary, Version=2.5.0.16412, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.MetaData, Version=2.5.0.31996, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.DataAccessLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Nature.MetaData, Version=2.5.0.20583, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.MetaData.dll</HintPath>
-    </Reference>
-    <Reference Include="Nature.RoleManage">
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.RoleManage.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.MetaData.dll</HintPath>
     </Reference>
     <Reference Include="Nature.Service, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Service.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.Service.dll</HintPath>
     </Reference>
     <Reference Include="Nature.Service.DataBase, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.Service.DataBase.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.Service.DataBase.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.UI.WebControl.BaseControl, Version=2.5.0.19867, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.UI.WebControl.BaseControl, Version=2.5.0.25842, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.BaseControl.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.UI.WebControl.BaseControl.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.UI.WebControl.MetaControl, Version=2.5.0.19867, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.UI.WebControl.MetaControl, Version=2.5.0.25843, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.MetaControl.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.UI.WebControl.MetaControl.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.UI.WebControl.QuickPager, Version=2.5.0.28080, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.UI.WebControl.QuickPager, Version=2.5.0.25842, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.QuickPager.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.UI.WebControl.QuickPager.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.UI.WebControl.QuickPagerSQL, Version=2.5.0.30712, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.UI.WebControl.QuickPagerSQL, Version=2.5.0.26675, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.UI.WebControl.QuickPagerSQL.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.UI.WebControl.QuickPagerSQL.dll</HintPath>
     </Reference>
-    <Reference Include="Nature.User, Version=2.5.0.30713, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nature.User, Version=2.5.0.24334, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\自然框架源码\_dll\bin\Nature.User.dll</HintPath>
+      <HintPath>..\Nature._dll\bin\Nature.User.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -331,7 +324,6 @@
       <DependentUpon>Tree.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="CommonModule\Role\GetRoleData.ashx" />
     <Content Include="CommonModule\Role\PostRoleData.ashx" />
@@ -370,7 +362,7 @@
           </IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>True</UseCustomServer>
-          <CustomServerUrl>http://nature.com</CustomServerUrl>
+          <CustomServerUrl>http://plat2.nature.com</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

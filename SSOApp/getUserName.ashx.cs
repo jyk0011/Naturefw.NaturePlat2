@@ -25,13 +25,22 @@ namespace NatureFramework.SSOApp
             {
                 //返回用户名和用户ID
                 StringBuilder sb = new StringBuilder(500);
+                sb.Append("\"userInfo\":{");
                 sb.Append("\"name\":\"");
                 sb.Append(MyUser.BaseUser.PersonName);
                 sb.Append("\",\"id\":\"");
                 sb.Append(MyUser.BaseUser.UserID);
+                sb.Append("\",\"deptId\":\"");
+                sb.Append(MyUser.BaseUser.DepartmentID[0]);
+                sb.Append("\",\"departmentName\":\"");
+                sb.Append(MyUser.BaseUser.DepartmentName);
+                sb.Append("\",\"personKind\":\"");
+                sb.Append(MyUser.BaseUser.PersonKind);
+
                 sb.Append("\",\"userCode\":\"");
                 sb.Append(MyUser.BaseUser.UserCode);
-                sb.Append("\"");
+                sb.Append("\"}");
+
 
                 Response.Write(sb.ToString());
             }

@@ -15,14 +15,8 @@ Nature.Top = {};/* 加载js用的命名空间 */
 Nature.WebConfig = {
     isShowPeiZhi: true,         //页面里是否显示“配置”，程序员编辑时设置为 true。上线后设置为 false
     WebAppId: 1,
-    dbid_236Write: "2,4",       //统一管理数据连接标识
-    dbid_236WriteJM: "2,14",    //统一管理数据连接标识
-
-    dbid_236SysLog: "2,6",       //wcf日志数据库
-
-    dbid_Loan: "2,13",       //快易贷测试数据库
-    //dbid_Loan: "2,12"        //快易贷正式数据库
-
+    dbid_236Write: "2,4"       //统一管理数据连接标识
+    
 };
 
 /*ajax的设置*/
