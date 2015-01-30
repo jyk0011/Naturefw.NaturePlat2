@@ -34,6 +34,7 @@ Nature.AjaxConfig.UrlLoadJs  = Nature.AjaxConfig.Urljs + "/Scripts/NatureAjax/Na
 Nature.AjaxConfig.UrlAdapter = Nature.AjaxConfig.Urljs + "/Scripts/NatureAjax/Nature.Adapter.js", /*适配的网址*/
 
 
+
 /* 复用父页面里的js文件的时候使用。是否使用自己页的js。true：本页加载js文件。false：使用父页的js文件。*/
 //Nature.isSelfJs = false;
 

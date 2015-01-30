@@ -70,11 +70,11 @@ namespace NatureFramework.SupportingPlatform.Document
             string tmp;
 
             //CREATE TABLE [dbo].[LogError] (
-            str.Append("\nCREATE TABLE [dbo].[");
+            str.Append("\n\rCREATE TABLE [dbo].[");
             str.Append(tableName);
             str.Append("] (");
             //	[LogID] [int] IDENTITY (1, 1) NOT NULL ,		//主键
-            str.Append("\n	[");
+            str.Append("\n\r	[");
             str.Append(dt.Rows[0]["字段名"]);
 
             #region 判断字段类型
@@ -111,7 +111,7 @@ namespace NatureFramework.SupportingPlatform.Document
             {
                 #region 字段
                 tmp = dt.Rows[i]["类型"].ToString().ToLower();	//类型
-                str.Append(",\n	[");
+                str.Append(",\n\r	[");
                 str.Append(dt.Rows[i]["字段名"]);
                 str.Append("] [");
 
@@ -136,12 +136,12 @@ namespace NatureFramework.SupportingPlatform.Document
                 str.Append(" NOT NULL ");
                 #endregion
             }
-            str.Append("\n) ON [PRIMARY]");
-            //str.Append("\nGO");
-            str.Append("\n");
+            str.Append("\n\r) ON [PRIMARY]");
+            //str.Append("\n\rGO");
+            str.Append("\n\r");
 
             //ALTER TABLE [dbo].[LogError] ADD 
-            str.Append("\nALTER TABLE [dbo].[");
+            str.Append("\n\rALTER TABLE [dbo].[");
             str.Append(tableName);
             str.Append("] ADD ");
 
@@ -156,7 +156,7 @@ namespace NatureFramework.SupportingPlatform.Document
                 #region 默认值
                 tmp = dt.Rows[i]["默认值"].ToString().ToLower();			//默认值
 
-                str.Append("\n	CONSTRAINT [DF_");
+                str.Append("\n\r	CONSTRAINT [DF_");
                 str.Append(tableName);
                 str.Append("_");
                 str.Append(dt.Rows[i]["字段名"]);
@@ -199,25 +199,25 @@ namespace NatureFramework.SupportingPlatform.Document
 
             //	CONSTRAINT [PK_Manage_LogError] PRIMARY KEY  CLUSTERED 
             #region 主键
-            str.Append("\n	CONSTRAINT [PK_");
+            str.Append("\n\r	CONSTRAINT [PK_");
             str.Append(tableName);
             str.Append("] PRIMARY KEY  CLUSTERED ");
-            str.Append("\n	(");
-            str.Append("\n		[");
+            str.Append("\n\r	(");
+            str.Append("\n\r		[");
             str.Append(dt.Rows[0]["字段名"]);
             str.Append("]");
-            str.Append("\n	)  ON [PRIMARY]\n GO ");
+            str.Append("\n\r	)  ON [PRIMARY]\n\r  "); //GO \n\r
             #endregion
 
             #region 字段的备注
 
-            string colBeiZhu = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'{0}' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'" + tableName + "', @level2type=N'COLUMN',@level2name=N'{1}'\n GO";
+            string colBeiZhu = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'{0}' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'" + tableName + "', @level2type=N'COLUMN',@level2name=N'{1}'\n\r "; //GO \n\r
             for (i = 0; i < dt.Rows.Count; i++)
             {
-                str.Append("\n");
+                str.Append("\n\r");
                 str.Append(string.Format(colBeiZhu, dt.Rows[i]["说明"], dt.Rows[i]["字段名"]));
             }
-            str.Append("\n");
+            str.Append("\n\r");
 
             #endregion
 

@@ -197,7 +197,7 @@ namespace NatureFramework.SupportingPlatform.Document
 
         protected void LstDataSelectedIndexChanged(object sender, EventArgs e)
         {
-             string sql = "SELECT TOP 1 ConnString FROM   Manage_DataBase WHERE  (DataBaseID = {0})";
+             const string sql = "SELECT TOP 1 ConnString FROM   Manage_DataBase WHERE  (DataBaseID = {0})";
 
              string excelPath = Dal.DalMetadata.ExecuteString(string.Format(sql, this.lstData.SelectedValue));
 
